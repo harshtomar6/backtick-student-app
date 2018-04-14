@@ -1,0 +1,2 @@
+export const FETCH_POST = "FETCH_POST"
+export const UPDATE_LIKES_POST = "UPDATE_LIKES_POST"

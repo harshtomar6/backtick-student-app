@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "62200871109",
+    "firebase_url": "https://backtick-syncoders.firebaseio.com",
+    "project_id": "backtick-syncoders",
+    "storage_bucket": "backtick-syncoders.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62200871109:android:b1cfdc8993805b38",
+        "android_client_info": {
+          "package_name": "com.syncoders.backtick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62200871109-f5fulp7b4s0jku92q2aurr10j8uuhn9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.syncoders.backtick",
+            "certificate_hash": "4a4225ec20a55db3c19cfbac02451deb5daa836b"
+          }
+        },
+        {
+          "client_id": "62200871109-5l0lpe55jrapog0iqe4vubabvq4hin18.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "62200871109-ss1i4s54d6ueeolj923f7mak9dbq94gr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7-Z3zEHlwHQofHXZu-a48gQxfFxgk_v0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62200871109-5l0lpe55jrapog0iqe4vubabvq4hin18.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
