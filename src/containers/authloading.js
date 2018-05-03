@@ -3,14 +3,16 @@ import {
     View,
     AppState
 } from 'react-native'
-import { connect } from 'react-redux'
 import _ from 'lodash'
 import {
     Spinner
 } from 'native-base'
+import { connect } from "react-redux";
 
+//Local imports
+import {updateUser} from '../actions' 
 import {addListener} from '../Utils/events'
-import { checkSignIn , updateUser } from '../actions/'
+import { checkSignIn } from '../actions/'
 
 class AuthLoading extends Component{
 
@@ -40,15 +42,18 @@ class AuthLoading extends Component{
           }
           if(val === "allok"){
             
-            if(data.user.phone === '' || data.user.phone === null){
+            if(data.user.phone === '' || data.user.phone === null || data.user.phone === 'none'){
                 this.props.navigation.navigate('InitScreen')
             }
             else if(data.user.classId === 'not joined'){
                 
                 this.props.navigation.navigate('Join')
             }
-            else  
+            else {
+                this.props.updateUser(data)
                 this.props.navigation.navigate('SignedIn')
+            }
+                
           }
       }
 
@@ -65,4 +70,4 @@ class AuthLoading extends Component{
 }
 
 
-export default AuthLoading
+export default connect(null,{updateUser})(AuthLoading)

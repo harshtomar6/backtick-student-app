@@ -32,12 +32,19 @@ class HomeScreen extends Component{
         this.emitLike = this.emitLike.bind(this)
         this.state={
             istaken:false,
-            cardname:'card1'
+            cardname:'card1',
+            token:'',
+            key:'',
+            user:null
         }
     }
-    componentDidMount(){
+    async componentDidMount(){
         this.props.fetchPosts()
 
+        const user = await getUser()
+        console.log(user.data.user);
+        
+        this.setState({token:user.data.token,key:user.data.key,user:user.data.user})
         
 
         this.socket.on('post-liked', (data) => {

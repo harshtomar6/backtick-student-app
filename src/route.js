@@ -65,7 +65,7 @@ export const Home = TabNavigator(
           }
 
         },
-        initialRouteName :'Bulletin',
+        initialRouteName :'CreatePost',
         tabBarPosition: 'bottom',
         animationEnabled: true,
         swipeEnabled: true,

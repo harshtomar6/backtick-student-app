@@ -30,6 +30,7 @@ class Init extends Component{
             key:''
         }
 
+        
         this.onChangeValidate = this.onChangeValidate.bind(this)
         this.openCamera = this.openCamera.bind(this)
     }
@@ -123,9 +124,15 @@ class Init extends Component{
     }
 
     async onPressUpdate(){
-        let url = await uploadToFirebase(this.state.photoURI,'image/jpeg','img')
-        console.log(url);
-        this.state.photoURI = url
+        if(this.state.photoURI !== ''){
+            let url = await uploadToFirebase(this.state.photoURI,'image/jpeg','img')
+            console.log(url);
+            this.state.photoURI = url
+        }
+        else{
+            this.state.photoURI = this.state.user.photoURL
+        }
+        
         console.log(this.state);
         
         sendUpdateToServer(this.state)

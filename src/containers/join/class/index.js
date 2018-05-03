@@ -103,7 +103,7 @@ class JoinClass extends Component{
                 <View><Text>Join Class</Text></View>
                 <View>
                     <Item>
-                        <Input placeholder='CLASS CODE' value={this.state.code}/>
+                        <Input placeholder='CLASS CODE' onChangeText={text=>this.setState({code:text})} value={this.state.code}/>
                     </Item>
                     <Button title='Scan' onPress={this.openCamera.bind(this)}/>
                     <Item>
