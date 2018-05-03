@@ -71,14 +71,23 @@ class Auth extends Component{
 
     onFail(obj){
 
-        
-            
-        
+        console.error(obj)
+        let title = ''
+        let message = ""
+        if(obj.from === 'googlesignin')
+        {   
+            title = "Google Signin"
+            message = obj.Error.message
+        }
+        else if(obj.from === 'fbsignin'){
+            title = "No Internet Connection"
+            message = 'Please check your internet connection'
+        }
             Alert.alert(
-                'Alert Title',
-                obj,
+                title,
+                message,
                 [
-                  {text: 'OK', onPress: () =>  Toast.show()},
+                  {text: 'OK'},
                 ],
                 { cancelable: false }
               )
@@ -184,7 +193,7 @@ class Auth extends Component{
                     </View>
 
                 </View>
-                <Toast />
+               
             </View>
         )
     }

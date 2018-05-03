@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import  '../actions/actions-type'
+
 import { FETCH_POST, UPDATE_LIKES_POST } from '../actions/actions-type';
 
 export function posts(state={},action){

@@ -3,6 +3,8 @@ package com.syncoders.backtick;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
+import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -11,6 +13,7 @@ import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -32,10 +35,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCameraPackage(),
+            new ReactNativeYouTube(),
             new RNGoogleSigninPackage(),
             new RNFirebaseAuthPackage(),
               new FBSDKPackage(mCallbackManager),
               new RNFirebaseMessagingPackage(),
+              new RNFirebaseStoragePackage(),
             new RNFirebasePackage()
       );
     }

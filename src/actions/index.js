@@ -1,10 +1,14 @@
 
 import axios from 'axios'
 import firebase from 'react-native-firebase'
+
+import CustomAuth from '../Utils/auth'
 import { GoogleSignin } from 'react-native-google-signin';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
-import { FETCH_POST , UPDATE_LIKES_POST } from './actions-type';
+import { FETCH_POST , UPDATE_LIKES_POST ,UPDATE_USER_DETAILS} from './actions-type';
  export const BASE_URL = 'https://backtick-api.herokuapp.com'
+
+
 
  export function fetchPosts(){
      
@@ -35,6 +39,27 @@ import { FETCH_POST , UPDATE_LIKES_POST } from './actions-type';
      }
  }
 
+async function  signInUserToServer(user){
+    const BASE_URL = 'https://backtick-api.herokuapp.com/student/social?key=asdjkawdioadjskdsadlasd'
+
+   return  axios.post(BASE_URL,{
+        name:user.name,
+        email:user.email,
+        providerData:user.providerData,
+        photoURL:user.photoURL,
+        emailVerified:user.emailVerified,
+        'X-Access-Key':'asdjkawdioadjskdsadlasd'
+    })
+    // .then(res=>{
+    //     console.log("Successfull",res);
+    //     CustomAuth.setUserLocalStorage(res.data)
+    // })
+    // .catch(e=>{
+    //     console.log("Error",e);
+    //      throw new Error('Error ')
+    // })
+    
+ }
  //Firebase integration
 
  //Google OAuth
@@ -42,6 +67,31 @@ import { FETCH_POST , UPDATE_LIKES_POST } from './actions-type';
  
 
 // Calling this function will open Google for login.
+function buildUser(rawUser,provider){
+    let user = {}
+    if(provider === 'google'){
+        user={
+            name:rawUser.name,
+            email:rawUser.email,
+            photoURL:rawUser.photo,
+            emailVerified:true,
+            providerData:provider
+        }
+    }
+    else if(provider === 'facebook'){
+        user={
+            name:rawUser.displayName,
+            email:rawUser.email,
+            photoURL:rawUser.photoURL,
+            emailVerified:true,
+            providerData:provider
+        }
+    }
+    else{
+
+    }
+    return user
+}
 export const googleLogin = async (fail) => {
     console.log("Google Sign in");
   try {
@@ -49,17 +99,16 @@ export const googleLogin = async (fail) => {
     await GoogleSignin.configure();
     
     const data = await GoogleSignin.signIn();
-    console.log("SIGNED USER",data);
-    // create a new firebase credential with the token
-    const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-    // login with credential
-    const currentUser = await firebase.auth().signInAndRetrieveDataWithCredential(credential);
-
-    console.info(currentUser.user.toJSON());
+    console.log('Data from Google ',data );
+    
+    const res = await signInUserToServer(buildUser(data,'google'))
+    console.log("Successfull",res);
+    CustomAuth.setUserLocalStorage(res.data)
     
   } catch (e) {
-    fail(e)
-    console.error(e);
+    console.log(JSON.stringify(e));
+    fail({Error:e,from:'googlesignin'})
+    //console.error(e);
   }
 }
 
@@ -75,32 +124,43 @@ export const facebookLogin = async (fail) => {
       console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
   
       // get the access token
+
       const data = await AccessToken.getCurrentAccessToken();
-  
+ 
+      //console.log(data)
       if (!data) {
         throw new Error('Something went wrong obtaining the users access token'); // Handle this however fits the flow of your app
       }
   
       // create a new firebase credential with the token
-      const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+      
+        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+      //console.log(credential);
+      
+      if(!credential){
+          console.log(e);
+          throw {error:e}
+      }
      
       
       // login with credential
-      try{
+      
         const currentUser = await firebase.auth().signInAndRetrieveDataWithCredential(credential);
-        console.log(currentUser);
-      }
-      catch(e){
-          console.log(e);
-         
-          throw {error:e}
-      }
-
-      console.info(JSON.stringify(currentUser.user.toJSON()))
+        if(!currentUser){
+            console.log(e);
+           
+            throw {error:e}
+        }
+        
+        //console.log('User after login form facebook',currentUser.user._user);
+        const res = await signInUserToServer(buildUser(currentUser.user._user,'facebook'))
+        console.log("Successfull",res);
+        CustomAuth.setUserLocalStorage(res.data)
+        console.info(JSON.stringify(currentUser.user.toJSON()))
     } catch (e) {
         
       console.log(JSON.stringify(e));
-      fail(JSON.stringify(e))
+      fail({Error:e,from:'fbsignin'})
       //console.error(JSON.stringify(e));
     }
   }
@@ -139,6 +199,71 @@ export function createUserWithEmailAndPassword(values,onSuccess,onFail){
         
  
 }
+
+// Upload to firebase 
+export   function uploadToFirebase(file,contentType,str){
+    
+    let metadata = {
+        contentType
+        };
+
+    const r = Math.random()*Number.parseInt((Date.now()))
+    const storage = firebase.storage().ref().child(`${str}${r}.jpg`)
+    var uploadTask = storage.put(file,metadata)
+    return new Promise((resolve,reject)=>{
+        // Register three observers:
+        // 1. 'state_changed' observer, called any time the state changes
+        // 2. Error observer, called on failure
+        // 3. Completion observer, called on successful completion
+        // Listen for state changes, errors, and completion of the upload.
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        function(snapshot) {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log('Upload is paused');
+                break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log('Upload is running');
+                break;
+            }
+        }, function(error) {
+
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+                case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+
+                case 'storage/canceled':
+                // User canceled the upload
+                break;
+                case 'storage/unknown':
+                // Unknown error occurred, inspect error.serverResponse
+                break;
+            }
+        }, function(snapshot) {
+            // Upload completed successfully, now we can get the download URL
+            console.log('Successfully upload');
+            
+            
+            storage.getDownloadURL().then(url=>{
+                
+                
+                return resolve(url)
+            })
+            
+            
+        })
+
+        
+    })
+    
+    
+}
 // Calling this function will check if user is already logged in
 // export const checkLogin = async ()=>{
 //     console.log("Check Login");
@@ -174,8 +299,46 @@ export function addEmailVerification(){
         .catch()
 }
 
-export function checkSignIn(success,fail){
+export async function checkSignIn(success,fail){
     
+    try{
+        const user = await CustomAuth.onAuthStateChange()
+        console.log("checkSignIn is Called",user)
+        if(user  !== ''){
+            // User is signed in.
+            console.log(user);
+        
+            const facebook = user.data.user.providerData[0] === 'facebook.com'
+            console.log("Facebook:",facebook);
+            if(!facebook){
+                console.log("Not by facebook");
+                if(!user.data.user.emailVerified){
+                    console.log("Sending Varification Email");
+                    success('emailunvarified')
+                }
+                else{
+                    console.log("All ok");
+                    success('allok',user.data)
+                }
+
+            }
+            else 
+            {   console.log("All ok");
+            
+                success('allok',user.data)
+            }               
+            
+        
+        }
+        else{
+            fail()
+        }
+    }
+    catch(err){
+        fail()
+    }
+
+    /*
      firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
   
@@ -190,11 +353,16 @@ export function checkSignIn(success,fail){
                 console.log("Sending Varification Email");
                 success('emailunvarified')
             }
+            else{
+                console.log("All ok");
+                success('allok',user._user)
+            }
+
         }
         else 
         {   console.log("All ok");
         
-            success('allok')
+            success('allok',user._user)
         }               
         
       
@@ -206,17 +374,109 @@ export function checkSignIn(success,fail){
       fail()
     }
   })
-    
+    */
   }
 
+  //Get firebase user
+  export  function getUser(){
+    
+        return CustomAuth.getUserLocalStorage()
+        
+      
+  }
 
   export function SignOut(){
-      firebase.auth().signOut()
-        .then(()=>{
-           console.log("Sign Out Successfull");
+      CustomAuth.removeUserLocalStorage()
+    //   firebase.auth().signOut()
+    //     .then(()=>{
+    //        console.log("Sign Out Successfull");
            
-        })
-        .catch(e=>{
+    //     })
+    //     .catch(e=>{
             
-        })
+    //     })
   }
+
+  // User actions 
+
+  export function updateUser(data){
+      return dispatch=>{
+        dispatch({
+            type:UPDATE_USER_DETAILS,
+            payload:data
+        })
+      }
+  }
+
+  // Send Update info to server
+
+  export async function sendUpdateToServer(val){
+      const url = `${BASE_URL}/student/${val.user._id}`
+    try{
+      let updatedUser = await axios.put(url,{
+          name:val.name,
+          phone:val.phone,
+          photoURL:val.photoURI,    
+      },{
+        headers:{
+            'X-Key':val.key,
+            'X-Access-Token':val.token 
+        }
+      })
+      if(!updatedUser){
+        
+      }
+     
+        let localData = await CustomAuth.getUserLocalStorage() 
+        let buildUser = {
+            data:{key:val.key,
+            token:val.token ,
+            user:updatedUser.data.data},
+            err:null
+        }
+        console.log('Response on Update',buildUser);
+          
+        CustomAuth.setUserLocalStorage(buildUser)
+    
+    }
+    catch(error){
+        console.log('Error:',error.response);
+        
+      }
+
+  }
+
+    // join a class info to server
+
+    export async function joinClassToServer(val){
+        
+        const url = `${BASE_URL}/class/join/${val.code}`
+      try{
+        let updatedUser = await axios.get(url,{
+          headers:{
+              'X-Key':val.key,
+              'X-Access-Token':val.token 
+          }
+        })
+        if(!updatedUser){
+          
+        }
+       
+          let localData = await CustomAuth.getUserLocalStorage() 
+          let buildUser = {
+              data:{key:val.key,
+              token:val.token,
+              user:updatedUser.data.data},
+              err:null
+          }
+          console.log('Response on Update',buildUser);
+            
+          CustomAuth.setUserLocalStorage(buildUser)
+      
+      }
+      catch(error){
+          console.log('Error:',error.response);
+          
+        }
+  
+    }

@@ -70,8 +70,16 @@ export const styles=StyleSheet.create({
     logoimg:{
         width:Dimensions.get('window').width-60,
         
+    },
+    updateInfoAvatar:{
+        justifyContent:'center',
+        alignItems:'center',
+        paddingTop:20,
+        paddingBottom:20
     }
+
 })
+
 function validate(values){
     const errors = {}
     if(!values.email){

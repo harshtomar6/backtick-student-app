@@ -3,14 +3,16 @@ import {
     View,
     AppState
 } from 'react-native'
-
+import { connect } from 'react-redux'
+import _ from 'lodash'
 import {
     Spinner
 } from 'native-base'
 
-import { checkSignIn } from '../actions/'
+import {addListener} from '../Utils/events'
+import { checkSignIn , updateUser } from '../actions/'
 
-export default class AuthLoading extends Component{
+class AuthLoading extends Component{
 
     constructor(props){
         super(props)
@@ -24,16 +26,29 @@ export default class AuthLoading extends Component{
             console.log(AppState.currentState);
             
         })
+        
+        addListener('auth-state-change',()=>checkSignIn(this.onSuccess.bind(this),this.onFail))
         checkSignIn(this.onSuccess.bind(this),this.onFail)
-      }
+    }
     
-      onSuccess(val){
+      onSuccess(val,data){
+          console.log('OnSuccess is called from google sign in ',data);
+          
           if(val === "emailunvarified"){
             console.log("Go to VarifyEmail");
             this.props.navigation.navigate('VerifyEmail')
           }
           if(val === "allok"){
-            this.props.navigation.navigate('SignedIn')
+            
+            if(data.user.phone === '' || data.user.phone === null){
+                this.props.navigation.navigate('InitScreen')
+            }
+            else if(data.user.classId === 'not joined'){
+                
+                this.props.navigation.navigate('Join')
+            }
+            else  
+                this.props.navigation.navigate('SignedIn')
           }
       }
 
@@ -49,3 +64,5 @@ export default class AuthLoading extends Component{
     }
 }
 
+
+export default AuthLoading
