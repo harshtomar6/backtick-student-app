@@ -1,26 +1,30 @@
 import React,{ Component } from 'react'
 import {
-    View,
-    Text,
-    Button,
-    TouchableOpacity,
-    Image,
-    StyleSheet
+View,
+Text,
+Button,
+TouchableOpacity,
+Image,
+StyleSheet
 } from 'react-native'
 import { Container, Content, Footer,Input } from 'native-base';
-import { connect } from 'react-redux'
-class CreatePost extends Component{
-    static navigationOptions = {
-        title:'CreatePost',
+import { connect } from 'react-redux';
+import { tintColor} from './../../../globals';
 
-    }
-    constructor(props){
-        super(props)
-        this.state={
-            to:'class',
-            type:'normal',
-            input:""
-        }
+class CreatePost extends Component{
+static navigationOptions = {
+	title:'Create Post',
+	headerTitleStyle: {
+		color: tintColor
+	}
+}
+constructor(props){
+	super(props)
+	this.state={
+			to:'class',
+			type:'normal',
+			input:""
+	}
 
     }
     componentDidMount(){
@@ -28,7 +32,7 @@ class CreatePost extends Component{
         
     }
     render(){
-        const photoURI = this.props.user.user.photoURL
+        let photoURI = this.props.user.user.photoURL
         const domain = photoURI.substring(8).split('/')[0]
         if(domain === 'graph.facebook.com'){
             photoURI = `${photoURI}?width=200`
@@ -67,15 +71,15 @@ class CreatePost extends Component{
                     </View>
                 </Content>
                 <Footer style={{backgroundColor:'#fff'}}>
-                    <View style={[styles.vertical,{backgroundColor:'yellow',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
+                    <View style={[styles.vertical,{backgroundColor:tintColor,flex:1,justifyContent:'space-around',alignItems:'center'}]}>
                         <TouchableOpacity>
-                            <Text>Photo</Text>
+                            <Text style={{color: '#fff'}}>Photo</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text>Video</Text>
+                            <Text style={{color: '#fff'}}>Video</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text>Doc</Text>
+                            <Text style={{color: '#fff'}}>Doc</Text>
                         </TouchableOpacity>
                     </View>
                 </Footer>
@@ -85,22 +89,22 @@ class CreatePost extends Component{
 }
 
 const styles = StyleSheet.create({
-    vertical:{
-        flexDirection:'row'
-    },
-    name:{
-        fontWeight:'800'
-    },
-    tumbnail:{
-    
-    },
-    profileInfo:{
-        padding:10
-    }
+vertical:{
+	flexDirection:'row'
+},
+name:{
+	fontWeight:'800'
+},
+tumbnail:{
+
+},
+profileInfo:{
+	padding:10
+}
 })
 const mapStateToProps = ({user})=>{
-    return {
-        user
-    }
+return {
+	user
+}
 }
 export default connect(mapStateToProps)(CreatePost)
