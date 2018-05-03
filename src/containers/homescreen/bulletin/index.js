@@ -4,6 +4,7 @@ import {
     Text,
     Button
 } from 'react-native'
+import Post from './post';
 
 import {SignOut} from '../../../actions/'
 
@@ -21,7 +22,7 @@ class Bulletin extends Component{
     render(){
         return(
             <View>
-                <Text>View Bulletin</Text>
+                <Post />
             </View>
         )
     }
