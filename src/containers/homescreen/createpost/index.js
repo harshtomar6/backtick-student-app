@@ -8,27 +8,167 @@ import {
     StyleSheet
 } from 'react-native'
 import { Container, Content, Footer,Input } from 'native-base';
+import RnCamera from './rncamera'
 import { connect } from 'react-redux'
+import ImagePicker from 'react-native-image-picker'
 class CreatePost extends Component{
-    static navigationOptions = {
-        title:'CreatePost',
+    static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
+        let title = 'CreatePost'
+        if(params){
+            if(params.setHeader){
+                return {
+                    title
+                  }
+            }
+            else{
+                return {
+                    title,
+                    header:null,
+                    tabBarVisible:false,
+                    swipeEnabled: false
+                }
+            }
+        }
+        else{
+            return {
+                title
+              }
+        }
 
-    }
+      };
     constructor(props){
         super(props)
         this.state={
             to:'class',
             type:'normal',
-            input:""
+            input:"",
+            camera:false
         }
+        this.openCamera = this.openCamera.bind(this)
 
     }
     componentDidMount(){
         console.log(this.props.user);
         
     }
+    openCamera(){
+        console.log("Open Camera is called");
+        this.props.navigation.setParams({setHeader: false})
+        this.setState({
+            camera:true
+        })
+    }
+
+    closeCamera(){
+        this.props.navigation.setParams({setHeader: true})
+        this.setState({
+            camera:false
+        })
+
+    }
+    openCameraVideo(){
+        let options = {
+            title: 'Select Avatar',
+            customButtons: [
+              {name: 'fb', title: 'Choose Photo from Facebook'},
+            ],
+            storageOptions: {
+              skipBackup: true,
+              path: 'images'
+            },
+            mediaType:'video'
+          };
+        ImagePicker.launchCamera(options, (response)  => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+              }
+              else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+              }
+              else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+              }
+              else {
+                let source = { uri: response.uri ,url:response.origURL};
+            
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            
+                console.log('source:',source);
+                
+              }
+          });
+    }
+    openImageLibrary(){
+
+        let options = {
+            title: 'Select Avatar',
+            customButtons: [
+              {name: 'fb', title: 'Choose Photo from Facebook'},
+            ],
+            storageOptions: {
+              skipBackup: true,
+              path: 'images'
+            }
+          };
+        ImagePicker.launchImageLibrary(options, (response)  => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+              }
+              else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+              }
+              else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+              }
+              else {
+                let source = { uri: response.uri };
+            
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            
+                console.log('source:',source);
+                
+              }
+          });
+    }
+
+    openImagePicker(){
+
+        let options = {
+            title: 'Select Avatar',
+            customButtons: [
+              {name: 'fb', title: 'Choose Photo from Facebook'},
+            ],
+            storageOptions: {
+              skipBackup: true,
+              path: 'images'
+            }
+          };
+        ImagePicker.showImagePicker(options, (response)  => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+              }
+              else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+              }
+              else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+              }
+              else {
+                let source = { uri: response.uri };
+            
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            
+                console.log('source:',source);
+                
+              }
+          });
+    }
     render(){
-        const photoURI = this.props.user.user.photoURL
+        let photoURI = this.props.user.user.photoURL
         const domain = photoURI.substring(8).split('/')[0]
         if(domain === 'graph.facebook.com'){
             photoURI = `${photoURI}?width=200`
@@ -36,6 +176,10 @@ class CreatePost extends Component{
         else{
             photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
         }
+
+        if(this.state.camera){
+            return <RnCamera back={this.closeCamera.bind(this)} update={(photo)=>console.log(photo)}/>
+        }else
         return(
             <Container>
                 <Content>
@@ -68,7 +212,14 @@ class CreatePost extends Component{
                 </Content>
                 <Footer style={{backgroundColor:'#fff'}}>
                     <View style={[styles.vertical,{backgroundColor:'yellow',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
-                        <TouchableOpacity>
+                        <TouchableOpacity 
+                            onPress={this.openCamera.bind(this)}
+                        >
+                            <Text>Camera</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            onPress={this.openImageLibrary.bind(this)}
+                        >
                             <Text>Photo</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>

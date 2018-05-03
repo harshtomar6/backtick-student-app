@@ -3,6 +3,8 @@ package com.syncoders.backtick;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.facebook.CallbackManager;
@@ -35,9 +37,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ImagePickerPackage(),
+            new RNGoogleSigninPackage(),
             new RNCameraPackage(),
             new ReactNativeYouTube(),
-            new RNGoogleSigninPackage(),
             new RNFirebaseAuthPackage(),
               new FBSDKPackage(mCallbackManager),
               new RNFirebaseMessagingPackage(),
