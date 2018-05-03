@@ -63,25 +63,25 @@ export default class RnCamera extends Component {
             onPress={this.toggleFlashMode.bind(this)}
             style = {styles.capture}
         >
-            <Text style={{fontSize: 14}}> F </Text>
+            <Icon name='camera' style={{fontSize: 50,color:'white'}}/>
         </TouchableOpacity>
         <TouchableOpacity
             onPress={this.toggleType.bind(this)}
             style = {styles.capture}
         >
-            <Text style={{fontSize: 14}}> T </Text>
+            <Icon name='camera' style={{fontSize: 50,color:'white'}}/>
         </TouchableOpacity>
         <TouchableOpacity
             onPress={this.takePicture.bind(this)}
             style = {styles.capture}
         >
-            <Text style={{fontSize: 14}}> SNAP </Text>
+            <Icon name='camera' style={{fontSize: 50,color:'white'}}/>
         </TouchableOpacity>
         <TouchableOpacity
             onPress={()=>this.props.back()}
             style = {styles.capture}
         >
-            <Text style={{fontSize: 14}}> X </Text>
+            <Icon name='camera' style={{fontSize: 50,color:'white'}}/>
         </TouchableOpacity>
         </View>
       </View>
@@ -112,9 +112,8 @@ const styles = StyleSheet.create({
   },
   capture: {
     flex: 0,
-    backgroundColor: '#fff',
     borderRadius: 5,
-    padding: 15,
+    padding: 5,
     paddingHorizontal: 20,
     alignSelf: 'center',
     margin: 20

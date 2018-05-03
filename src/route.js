@@ -1,4 +1,6 @@
+import React from 'react';
 import { StackNavigator , SwitchNavigator, TabNavigator,TabBarBottom  } from 'react-navigation'
+import { Icon } from 'native-base';
 //HomeScreen  imports
 import HomeScreen from './containers/homescreen/'
 import CreatePost from './containers/homescreen/createpost/'
@@ -39,22 +41,26 @@ export const Home = TabNavigator(
     },
     {
         navigationOptions: ({ navigation }) => ({
-          tabBarIcon: ({ focused, tintColor }) => {
-            const { routeName } = navigation.state;
-            let iconName;
-            if (routeName === 'CreatePost') {
-              iconName = `ios-information-circle${focused ? '' : '-outline'}`;
-            } else if (routeName === 'Bulletin') {
-              iconName = `ios-options${focused ? '' : '-outline'}`;
-            }
-    
-            // You can return any component that you like here! We usually use an
-            // icon component from react-native-vector-icons
-            return <View><Text>{iconName}</Text></View>;
-          },
-          tabStyle :{
-              width:50
-          }
+            tabBarIcon: ({ focused, tintColor }) => {
+                const { routeName } = navigation.state;
+                let iconName;
+                if (routeName === 'CreatePost')
+                  iconName = `ios-add-circle${focused ? '' : '-outline'}`;
+                else if (routeName === 'Bulletin')
+                  iconName = `ios-albums${focused ? '' : '-outline'}`;
+                else if(routeName === 'Notification')
+                    iconName = `ios-notifications${focused ? '' : '-outline'}`;
+                else if(routeName === 'Schedules')
+                    iconName = `ios-calendar${focused ? '' : '-outline'}`
+                else if(routeName === 'Saved')
+                    iconName = `ios-bookmark${focused ? '' : '-outline'}`
+        
+                // You can return any component that you like here! We usually use an
+                // icon component from react-native-vector-icons
+                return <Icon name={iconName} style={{color: tintColor}}/>;
+              },
+              tabStyle :{
+              }
         }),
         tabBarOptions: {
           activeTintColor: '#42b9f4',
