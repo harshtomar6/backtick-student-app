@@ -28,6 +28,14 @@ class CreatePost extends Component{
         
     }
     render(){
+        const photoURI = this.props.user.user.photoURL
+        const domain = photoURI.substring(8).split('/')[0]
+        if(domain === 'graph.facebook.com'){
+            photoURI = `${photoURI}?width=200`
+        }
+        else{
+            photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
+        }
         return(
             <Container>
                 <Content>
@@ -35,7 +43,7 @@ class CreatePost extends Component{
                     <View>
                         <View style={[styles.vertical,{padding:10}]}>
                             <View style={styles.tumbnail}>
-                                <Image source={{uri:'https://graph.facebook.com/1746664335354802/picture?width=200'}} style={{width:55,height:55,borderRadius:50}}/>
+                                <Image source={{uri:photoURI}} style={{width:55,height:55,borderRadius:50}}/>
                             </View>
                             <View style={styles.profileInfo}>
                                 <Text style={styles.name}> 
