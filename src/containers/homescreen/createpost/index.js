@@ -8,11 +8,15 @@ Image,
 StyleSheet
 } from 'react-native'
 import { Container, Content, Footer,Input } from 'native-base';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { tintColor} from './../../../globals';
+
 class CreatePost extends Component{
 static navigationOptions = {
-	title:'CreatePost',
-
+	title:'Create Post',
+	headerTitleStyle: {
+		color: tintColor
+	}
 }
 constructor(props){
 	super(props)
@@ -22,58 +26,66 @@ constructor(props){
 			input:""
 	}
 
-}
-componentDidMount(){
-	console.log(this.props.user);
-	
-}
-render(){
-	return(
-		<Container>
-			<Content>
-				
-				<View>
-					<View style={[styles.vertical,{padding:10}]}>
-						<View style={styles.tumbnail}>
-							<Image source={{uri:'https://graph.facebook.com/1746664335354802/picture?width=200'}} style={{width:55,height:55,borderRadius:50}}/>
-						</View>
-						<View style={styles.profileInfo}>
-							<Text style={styles.name}> 
-								{this.props.user.user.name}
-							</Text>
-						</View>
-					</View>
-					<View>
-							<View style={[styles.vertical,{padding:10}]}>
-									<TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
-											<Text>TO:{this.state.to}</Text>
-									</TouchableOpacity>
-									<TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
-											<Text>TYPE:{this.state.type}</Text>
-									</TouchableOpacity>
-							</View>
-					</View>
-					<View style={[styles.vertical,{padding:10}]}>
-							<Input placeholder="What's on your mind?" value={this.state.input} onChangeText={text=>this.setState({input:text})}/>
-					</View>
-				</View>
-		</Content>
-		<Footer style={{backgroundColor:'#fff'}}>
-				<View style={[styles.vertical,{backgroundColor:'yellow',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
-					<TouchableOpacity>
-						<Text>Photo</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text>Video</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text>Doc</Text>
-					</TouchableOpacity>
-				</View>
-			</Footer>
-		</Container>
-	)
-}
+    }
+    componentDidMount(){
+        console.log(this.props.user);
+        
+    }
+    render(){
+        let photoURI = this.props.user.user.photoURL
+        const domain = photoURI.substring(8).split('/')[0]
+        if(domain === 'graph.facebook.com'){
+            photoURI = `${photoURI}?width=200`
+        }
+        else{
+            photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
+        }
+        return(
+            <Container>
+                <Content>
+                    
+                    <View>
+                        <View style={[styles.vertical,{padding:10}]}>
+                            <View style={styles.tumbnail}>
+                                <Image source={{uri:photoURI}} style={{width:55,height:55,borderRadius:50}}/>
+                            </View>
+                            <View style={styles.profileInfo}>
+                                <Text style={styles.name}> 
+                                    {this.props.user.user.name}
+                                </Text>
+                            </View>
+                        </View>
+                        <View>
+                            <View style={[styles.vertical,{padding:10}]}>
+                                <TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
+                                    <Text>TO:{this.state.to}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
+                                    <Text>TYPE:{this.state.type}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={[styles.vertical,{padding:10}]}>
+                            <Input placeholder="What's on your mind?" value={this.state.input} onChangeText={text=>this.setState({input:text})}/>
+                        </View>
+                    </View>
+                </Content>
+                <Footer style={{backgroundColor:'#fff'}}>
+                    <View style={[styles.vertical,{backgroundColor:tintColor,flex:1,justifyContent:'space-around',alignItems:'center'}]}>
+                        <TouchableOpacity>
+                            <Text style={{color: '#fff'}}>Photo</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={{color: '#fff'}}>Video</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Text style={{color: '#fff'}}>Doc</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Footer>
+            </Container>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
