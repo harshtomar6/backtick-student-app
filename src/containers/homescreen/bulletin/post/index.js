@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
-import { Icon } from 'native-base';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Modal,
+  ScrollView, Dimensions, TouchableHighlight } from 'react-native';
+import { Icon, Button } from 'native-base';
 
 class Post extends React.Component {
 
@@ -8,7 +9,9 @@ class Post extends React.Component {
     super();
     this.state = {
       liked: false,
-      saved: false
+      saved: false,
+      modalVisible: false,
+      fullImage: ''
     };
   }
 
@@ -16,40 +19,39 @@ class Post extends React.Component {
     return this.props.attachments.map((attachment, index) => {
       switch(this.props.attachments.length){
         case 1:
-          return this.mapAttachment(attachment);
+          return this.mapAttachment(attachment, index);
+        case 3:
         case 2:
           return (
             <View style={styles.attachCount2}>
-              {this.mapAttachment(attachment)}
+              {this.mapAttachment(attachment, index)}
             </View>
           );
-        case 3:
-          if(index === 0 || index === 2)
-            return (
-              <View style={styles.attachCount2}>
-                {this.mapAttachment(attachment)}
-              </View>
-            )
-          else if(index === 1)
-            return(
-              <View style={styles.attachCount2}>
-                <View>
-                  {this.mapAttachment(attachment)}
-                </View>
-              </View>
-            )
+        default:
+          return <Text>hello</Text>
       } 
     });
   }
 
-  mapAttachment = (attachment) => {
+  mapAttachment = (attachment, index) => {
     switch(attachment.type){
       case 'IMAGE':
-        return <Image source={{uri: attachment.url}} 
-                  style={{width: '100%', height: '100%', resizeMode: 'cover'}}/>
+        return <TouchableOpacity activeOpacity={0.8} style={{flex: 1}}
+                  onPress={() => this.handleImageTouch(true, attachment.url, index)}>
+                  <Image source={{uri: attachment.url}} 
+                    style={{width: '100%', height: '100%'}} resizeMode="cover"/>
+                </TouchableOpacity>
       default:
         return <View />
     }
+  }
+
+  handleImageTouch = (visible, imageUrl, active) => {
+    this.setState({modalVisible: visible, fullImage: imageUrl}, () => {
+      setTimeout(() => {
+        this.scrollView.scrollTo({x: active*Dimensions.get('window').width, y:0, animated: false})
+      }, 10)
+    });
   }
 
   handleLike = () => {
@@ -64,9 +66,43 @@ class Post extends React.Component {
     this.setState({saved: !this.state.saved})
   }
 
+  handleZoomScale = (event) => {
+    this.scrollResponderRef.scrollResponderZoomTo({ 
+       x: 0, 
+       y: 0, 
+       width: Dimensions.get('window').width, 
+       height: Dimensions.get('window').height, 
+       animated: true 
+    })
+  }
+
+  setZoomRef = node => {
+    if(node){
+      this.zoomRef = node;
+      this.scrollResponderRef = this.zoomRef.getScrollResponder()
+    }
+  }
+
   render(){
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setState({modalVisible: !this.state.modalVisible, fullImage: ''});
+          }}>
+          <ScrollView horizontal pagingEnabled ref={e => this.scrollView = e}>
+            {this.props.attachments.map(attachment =>
+              <TouchableHighlight onPress={this.handleZoomScale}>
+                <Image source={{uri: attachment.url}} style={{height: Dimensions.get('window').height, width: Dimensions.get('window').width}}
+                  resizeMode='contain'/>
+              </TouchableHighlight> 
+            )}
+          </ScrollView>
+        </Modal>
+
         <View style={styles.card}>
           <View style={styles.cardHead}>
             <Image source={{uri: this.props.thumbnail}} style={styles.thumbnail}/>
