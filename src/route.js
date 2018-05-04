@@ -34,43 +34,45 @@ export const Home = TabNavigator(
         Schedules:{
             screen:Bulletin
         },
-        Star:{
+        Saved:{
             screen:Save
         },
 
     },
     {
         navigationOptions: ({ navigation }) => ({
-            tabBarIcon: ({ focused, tintColor }) => {
-                const { routeName } = navigation.state;
-                let iconName;
-                if (routeName === 'CreatePost')
-                  iconName = `ios-add-circle${focused ? '' : '-outline'}`;
-                else if (routeName === 'Bulletin')
-                  iconName = `ios-albums${focused ? '' : '-outline'}`;
-                else if(routeName === 'Notification')
-                    iconName = `ios-notifications${focused ? '' : '-outline'}`;
-                else if(routeName === 'Schedules')
-                    iconName = `ios-calendar${focused ? '' : '-outline'}`
-                else if(routeName === 'Saved')
-                    iconName = `ios-bookmark${focused ? '' : '-outline'}`
-        
-                // You can return any component that you like here! We usually use an
-                // icon component from react-native-vector-icons
-                return <Icon name={iconName} style={{color: tintColor}}/>;
-              },
-              tabStyle :{
-              }
+          tabBarIcon: ({ focused, tintColor }) => {
+            const { routeName } = navigation.state;
+            let iconName;
+            if (routeName === 'CreatePost')
+              iconName = `ios-add-circle${focused ? '' : '-outline'}`;
+            else if (routeName === 'Bulletin')
+              iconName = `ios-albums${focused ? '' : '-outline'}`;
+            else if(routeName === 'Notification')
+                iconName = `ios-notifications${focused ? '' : '-outline'}`;
+            else if(routeName === 'Schedules')
+                iconName = `ios-calendar${focused ? '' : '-outline'}`
+            else if(routeName === 'Saved')
+                iconName = `ios-bookmark${focused ? '' : '-outline'}`
+    
+            // You can return any component that you like here! We usually use an
+            // icon component from react-native-vector-icons
+            return <Icon name={iconName} style={{color: tintColor}}/>;
+          },
+          tabStyle :{
+          }
         }),
         tabBarOptions: {
-          activeTintColor: '#42b9f4',
-          inactiveTintColor: 'gray',
-          pressColor :'#42b9f4',
+          activeTintColor: '#0960BD',
+          inactiveTintColor: '#666',
+          pressColor :'red',
+          showLabel: true,
           style: {
             backgroundColor: 'white',
           }
 
         },
+        tabBarComponent: TabBarBottom,
         initialRouteName :'CreatePost',
         tabBarPosition: 'bottom',
         animationEnabled: true,

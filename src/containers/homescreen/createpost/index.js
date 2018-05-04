@@ -1,16 +1,17 @@
 import React,{ Component } from 'react'
 import {
-    View,
-    Text,
-    Button,
-    TouchableOpacity,
-    Image,
-    StyleSheet
+View,
+Text,
+Button,
+TouchableOpacity,
+Image,
+StyleSheet
 } from 'react-native'
 import { Container, Content, Footer,Input } from 'native-base';
 import RnCamera from './rncamera'
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
+import tintColor from '../../../globals'
 class CreatePost extends Component{
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -18,7 +19,10 @@ class CreatePost extends Component{
         if(params){
             if(params.setHeader){
                 return {
-                    title
+                    title,
+                    headerTitleStyle: {
+                        color: tintColor
+                    }
                   }
             }
             else{
@@ -32,7 +36,10 @@ class CreatePost extends Component{
         }
         else{
             return {
-                title
+                title,
+                headerTitleStyle: {
+                    color: tintColor
+                }
               }
         }
 
@@ -223,10 +230,10 @@ class CreatePost extends Component{
                             <Text>Photo</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text>Video</Text>
+                            <Text style={{color: '#fff'}}>Video</Text>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text>Doc</Text>
+                            <Text style={{color: '#fff'}}>Doc</Text>
                         </TouchableOpacity>
                     </View>
                 </Footer>
@@ -236,22 +243,22 @@ class CreatePost extends Component{
 }
 
 const styles = StyleSheet.create({
-    vertical:{
-        flexDirection:'row'
-    },
-    name:{
-        fontWeight:'800'
-    },
-    tumbnail:{
-    
-    },
-    profileInfo:{
-        padding:10
-    }
+vertical:{
+	flexDirection:'row'
+},
+name:{
+	fontWeight:'800'
+},
+tumbnail:{
+
+},
+profileInfo:{
+	padding:10
+}
 })
 const mapStateToProps = ({user})=>{
-    return {
-        user
-    }
+return {
+	user
+}
 }
 export default connect(mapStateToProps)(CreatePost)

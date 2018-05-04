@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "62200871109-97u11qo73c20emopfn9tqlptjsi8rqca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.syncoders.backtick",
+            "certificate_hash": "b5574a03ca1ab82a3a4c521ea2e267513e754918"
+          }
+        },
+        {
           "client_id": "62200871109-f5fulp7b4s0jku92q2aurr10j8uuhn9n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
