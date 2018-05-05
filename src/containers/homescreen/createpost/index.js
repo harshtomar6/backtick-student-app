@@ -1,17 +1,22 @@
 import React,{ Component } from 'react'
 import {
-View,
-Text,
-Button,
-TouchableOpacity,
-Image,
-StyleSheet
+    View,
+    Text,
+    Button,
+    TouchableOpacity,
+    Image,
+    StyleSheet,
+    FlatList
 } from 'react-native'
-import { Container, Content, Footer,Input } from 'native-base';
+import _ from 'lodash'
+import shortid from 'shortid'
+import { Container, Content, Footer,Input,Icon } from 'native-base';
 import RnCamera from './rncamera'
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import tintColor from '../../../globals'
+import UploadList from './uploadlist'
+
 class CreatePost extends Component{
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -50,10 +55,15 @@ class CreatePost extends Component{
             to:'class',
             type:'normal',
             input:"",
-            camera:false
+            camera:false,
+            count:0,
+            attachments:[]
         }
+        
         this.openCamera = this.openCamera.bind(this)
-
+        this.addUrl = this.addUrl.bind(this)
+        
+    
     }
     componentDidMount(){
         console.log(this.props.user);
@@ -174,6 +184,42 @@ class CreatePost extends Component{
               }
           });
     }
+    addUrl(type,url){
+
+        let id = shortid.generate()
+        
+
+        this.setState({
+            attachments:[...this.state.attachments,
+                {   
+                    type,
+                    url,
+                    status:false,
+                    id,
+                    uploadURL:''
+                }
+            ],
+            count:this.state.count+1
+        })
+    }
+    
+    changeStatus(id,status){
+        this.state.attachments.map(item=>{
+            if(item.id === id){
+                item.status = status
+            }
+
+        })
+    }
+
+    setUpdateURL(id,uploadurl){
+        this.state.attachments.map(item=>{
+            if(item.id === id){
+                item.uploadURL = uploadurl
+            }
+
+        })
+    }
     render(){
         let photoURI = this.props.user.user.photoURL
         const domain = photoURI.substring(8).split('/')[0]
@@ -185,7 +231,7 @@ class CreatePost extends Component{
         }
 
         if(this.state.camera){
-            return <RnCamera back={this.closeCamera.bind(this)} update={(photo)=>console.log(photo)}/>
+            return <RnCamera back={this.closeCamera.bind(this)}  update={(url)=>this.addUrl('image',url)}/>
         }else
         return(
             <Container>
@@ -215,25 +261,33 @@ class CreatePost extends Component{
                         <View style={[styles.vertical,{padding:10}]}>
                             <Input placeholder="What's on your mind?" value={this.state.input} onChangeText={text=>this.setState({input:text})}/>
                         </View>
+                        <View>
+                            
+                            <UploadList changeStatus={this.changeStatus.bind(this)} setUpdateURL={this.setUpdateURL.bind(this)} attachments={this.state.attachments}/>
+                        </View>
                     </View>
                 </Content>
                 <Footer style={{backgroundColor:'#fff'}}>
-                    <View style={[styles.vertical,{backgroundColor:'yellow',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
+                    <View style={[styles.vertical,{backgroundColor:'#f5f5f5',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
                         <TouchableOpacity 
                             onPress={this.openCamera.bind(this)}
                         >
-                            <Text>Camera</Text>
+                            <Icon name='md-camera' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             onPress={this.openImageLibrary.bind(this)}
                         >
-                            <Text>Photo</Text>
+                            <Icon name='md-image' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={{color: '#fff'}}>Video</Text>
+                            <Icon name='md-videocam' style={{color:'#749bbf'}}/>
+                           
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Text style={{color: '#fff'}}>Doc</Text>
+                           <Icon name='md-document' style={{color:'#749bbf'}}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                           <Icon name='md-link' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
                     </View>
                 </Footer>
