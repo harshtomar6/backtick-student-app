@@ -1,22 +1,21 @@
-import _ from 'lodash'
+import * as actionTypes from './../actions/actions-type';
 
-import { FETCH_POST, UPDATE_LIKES_POST } from '../actions/actions-type';
+const initialState = {
+    isLoading: false,
+    hasError: false,
+    errMsg: '',
+    data: [],
+}
 
-export function posts(state={},action){
+export function posts(state = initialState, action){
     switch(action.type){
-        case FETCH_POST:
-           
-            let newState = _.mapKeys(action.payload,'_id')
-            
-             
-            return newState
-        case UPDATE_LIKES_POST:
-        
-            newState = {...state}
-            console.log(newState === state );
-            newState[action.payload._id].likes = action.payload.likes
-            return newState
-        default: return state
-
+        case actionTypes.GET_POST_REQUEST:
+            return {...state, isLoading: true}
+        case actionTypes.GET_POST_SUCCESS:
+            return {...state, data: action.payload, isLoading: false}
+        case actionTypes.GET_POST_ERROR:
+            return {...state, hasError: true, errMsg: action.payload, isLoading: false}
+        default:
+            return state;
     }
 }

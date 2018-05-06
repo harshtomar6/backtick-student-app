@@ -11,11 +11,11 @@ import {
 import YouTube from 'react-native-youtube'
 import SocketIOClient from 'socket.io-client';
 
-import { BASE_URL, fetchPosts, updateLikes,SignOut } from '../../actions'
+import { BASE_URL, updateLikes,SignOut } from '../../actions'
 import Post from '../post'
 class HomeScreen extends Component{
 
-    static navigationOptions = {
+    /*static navigationOptions = {
         title:'BackTick',
         headerRight: (
             <Button
@@ -24,7 +24,7 @@ class HomeScreen extends Component{
               color="#000"
             />
           )
-    }
+    }*/
     constructor(props){
         super(props)
 
@@ -39,7 +39,6 @@ class HomeScreen extends Component{
         }
     }
     async componentDidMount(){
-        this.props.fetchPosts()
 
         const user = await getUser()
         console.log(user.data.user);
@@ -108,7 +107,7 @@ class HomeScreen extends Component{
         return(
             <View>
 
-                <ScrollView>
+                <View>
                         {  
                             this.state.cardname==='card1'?this.renderYouTube("zINcs5IH5PY"):this.renderView('card1')
                         
@@ -121,7 +120,7 @@ class HomeScreen extends Component{
                             this.state.cardname==='card3'?this.renderYouTube("zINcs5IH5PY"):this.renderView('card3')
                         
                         }
-                </ScrollView>
+                </View>
             </View>
         )
     }
@@ -132,4 +131,4 @@ function mapStateToProps({posts}){
         posts
     }
 }
-export default connect(mapStateToProps,{ fetchPosts, updateLikes })(HomeScreen)
+export default connect(mapStateToProps,{ updateLikes })(HomeScreen)
