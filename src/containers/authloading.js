@@ -46,7 +46,7 @@ class AuthLoading extends Component{
             if(data.user.phone === '' || data.user.phone === null || data.user.phone === 'none'){
                 this.props.navigation.navigate('InitScreen')
             }
-            else if(data.user.classId === 'not joined'){
+            else if(!data.user.classJoined){
                 
                 this.props.navigation.navigate('Join')
             }
