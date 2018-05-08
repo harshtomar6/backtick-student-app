@@ -16,7 +16,7 @@ import { Root,Container, Content, Footer,Input,Icon,ActionSheet,Button as NButto
 import RnCamera from './rncamera'
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
-import tintColor from '../../../globals'
+import { tintColor } from '../../../globals'
 import UploadList from './uploadlist'
 
 var LEVEL = ["Class", "Department", "College"];
@@ -24,7 +24,7 @@ var TYPE = ["Notes", "Assignments", "Syllabus"];
 class CreatePost extends Component{
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
-        let title = 'CreatePost'
+        let title = 'New Post'
         if(params){
             if(params.setHeader){
                 return {
@@ -33,9 +33,9 @@ class CreatePost extends Component{
                         color: tintColor
                     },
                     headerRight: (
-                        <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
-                            <Icon name='md-send'/>
-                        </TouchableOpacity>
+                        <NButton style={{paddingTop: 10}} transparent>
+                            <Icon name='md-send' style={{color: tintColor}}/>
+                        </NButton>
                       )
                   }
             }
@@ -55,9 +55,9 @@ class CreatePost extends Component{
                     color: tintColor
                 },
                 headerRight: (
-                    <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
-                        <Icon name='md-send'/>
-                    </TouchableOpacity>
+                    <NButton style={{paddingTop: 10}}transparent>
+                        <Icon name='md-send' style={{color: tintColor}}/>
+                    </NButton>
                   )
               }
         }
@@ -275,7 +275,7 @@ class CreatePost extends Component{
                             </View>
                         </View>
                         <View>
-                            <View style={[styles.vertical,{padding:10,backgroundColor:'#e8e8e8'}]}>
+                            <View style={[styles.vertical,{padding:10,backgroundColor:'#eee'}]}>
                                 <TouchableOpacity 
                                     style={{margin:5,backgroundColor:'#7e97a8',paddingLeft:10,paddingRight:10,borderRadius:4,elevation:1}}
                                     onPress={() =>
@@ -301,7 +301,7 @@ class CreatePost extends Component{
                                 <TouchableOpacity 
                                     style={{margin:5,backgroundColor:'#7e97a8',paddingLeft:10,paddingRight:10,borderRadius:4,elevation:1}}
                                     onPress={() =>
-                                        ActionSheet.show(
+                                        this.actionSheet._root.showActionSheet(
                                           {
                                             options: TYPE,
                                             cancelButtonIndex:5,
@@ -337,25 +337,26 @@ class CreatePost extends Component{
                         <TouchableOpacity 
                             onPress={this.openCamera.bind(this)}
                         >
-                            <Icon name='md-camera' style={{color:'#749bbf'}}/>
+                            <Icon name='md-camera' style={{color:'#749bbf', fontSize: 24}}/>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             onPress={this.openImageLibrary}
                         >
-                            <Icon name='md-image' style={{color:'#749bbf'}}/>
+                            <Icon name='md-image' style={{color:'#749bbf', fontSize: 24}}/>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Icon name='md-videocam' style={{color:'#749bbf'}}/>
+                            <Icon name='md-videocam' style={{color:'#749bbf', fontSize: 24}}/>
                            
                         </TouchableOpacity>
                         <TouchableOpacity>
-                           <Icon name='md-document' style={{color:'#749bbf'}}/>
+                           <Icon name='md-document' style={{color:'#749bbf', fontSize: 24}}/>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                           <Icon name='md-link' style={{color:'#749bbf'}}/>
+                           <Icon name='md-link' style={{color:'#749bbf', fontSize: 24}}/>
                         </TouchableOpacity>
                     </View>
                 </Footer>
+                <ActionSheet ref={(c) => { this.actionSheet = c; }} />
             </Container>
             </Root>
         )

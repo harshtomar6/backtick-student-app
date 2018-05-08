@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    borderTopColor: '#999',
-    borderTopWidth: 0.2,
+    borderTopColor: '#ddd',
+    borderTopWidth: 0.5,
     marginTop: 10,
     flexDirection: 'row'
   }
