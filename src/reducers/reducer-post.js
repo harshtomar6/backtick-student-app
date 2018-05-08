@@ -1,16 +1,16 @@
 import _ from 'lodash'
 
-import { FETCH_POST, UPDATE_LIKES_POST } from '../actions/actions-type';
+import * as actionType from '../actions/actions-type';
 
 export function posts(state={},action){
     switch(action.type){
-        case FETCH_POST:
+        case actionType.FETCH_POST:
            
             let newState = _.mapKeys(action.payload,'_id')
             
              
             return newState
-        case UPDATE_LIKES_POST:
+        case actionType.UPDATE_LIKES_POST:
         
             newState = {...state}
             console.log(newState === state );
@@ -18,5 +18,24 @@ export function posts(state={},action){
             return newState
         default: return state
 
+    }
+}
+
+const createPostInitalState = {
+    status:'BUILD',
+    error:null,
+    post:null
+}
+
+export function createPost(state=createPostInitalState,action){
+    switch(action.type){
+        case actionType.CREATE_POST_REQUEST:
+            return {status:'SENDING'}
+        case actionType.CREATE_POST_SUCCESS:
+            return {status:'SUCCESS',error:null,post:action.payload}
+        case actionType.CREATE_POST_FAIL:
+            return {status:'FAIL',error:action.payload}
+        default:
+            return state
     }
 }

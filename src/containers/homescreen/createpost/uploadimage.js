@@ -57,17 +57,17 @@ class UploadImage extends Component{
     if(this.state.percentage < 99){
       return(
         <View style={{position:'relative',flex:1,alignItems:'center',justifyContent:'center'}}>
-        <PercentageCircle radius={35} percent={this.state.percentage} bgcolor={'#00b6ff'} innerColor={'#fff'} borderWidth={3} color={"#bababa"}>
-          <Icon name='md-image'/>
-        </PercentageCircle> 
+          <PercentageCircle radius={35} percent={this.state.percentage} bgcolor={'#00b6ff'} innerColor={'#fff'} borderWidth={3} color={"#bababa"}>
+            <Icon name='md-close'/>
+          </PercentageCircle> 
         </View>
       )
     }else{
       return(
         <View style={{position:'absolute'}}>
-          <View style={{backgroundColor:'white',borderRadius:50,opacity:0.5,margin:4,paddingLeft:10,paddingRight:10}}>
-            <Text>DONE</Text>
-          </View>
+          <TouchableOpacity style={{backgroundColor:'white',borderRadius:50,opacity:0.5,margin:8,paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:5}}>
+            <Icon name='md-trash'/>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -78,7 +78,7 @@ class UploadImage extends Component{
         <TouchableOpacity activeOpacity={0.8} style={{flex: 1}}
                   >
                   <Image source={{uri:this.props.url}} 
-                    style={{height: 250, width: Dimensions.get('window').width}} resizeMode="cover"/>
+                    style={{height:250,width: Dimensions.get('window').width}} resizeMode="cover"/>
                 </TouchableOpacity>
         
         <View style={{position:'absolute',display:'flex',height: 250, width: Dimensions.get('window').width}}>

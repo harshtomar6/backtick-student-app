@@ -6,17 +6,21 @@ import {
     TouchableOpacity,
     Image,
     StyleSheet,
-    FlatList
+    FlatList,
+    Picker,
+    Dimensions
 } from 'react-native'
 import _ from 'lodash'
 import shortid from 'shortid'
-import { Container, Content, Footer,Input,Icon } from 'native-base';
+import { Root,Container, Content, Footer,Input,Icon,ActionSheet,Button as NButton } from 'native-base';
 import RnCamera from './rncamera'
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import tintColor from '../../../globals'
 import UploadList from './uploadlist'
 
+var LEVEL = ["Class", "Department", "College"];
+var TYPE = ["Notes", "Assignments", "Syllabus"];
 class CreatePost extends Component{
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -27,7 +31,12 @@ class CreatePost extends Component{
                     title,
                     headerTitleStyle: {
                         color: tintColor
-                    }
+                    },
+                    headerRight: (
+                        <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
+                            <Icon name='md-send'/>
+                        </TouchableOpacity>
+                      )
                   }
             }
             else{
@@ -44,7 +53,12 @@ class CreatePost extends Component{
                 title,
                 headerTitleStyle: {
                     color: tintColor
-                }
+                },
+                headerRight: (
+                    <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
+                        <Icon name='md-send'/>
+                    </TouchableOpacity>
+                  )
               }
         }
 
@@ -52,8 +66,9 @@ class CreatePost extends Component{
     constructor(props){
         super(props)
         this.state={
-            to:'class',
-            type:'normal',
+            level:LEVEL[0],
+            type:'Notes',
+            typeSelector:false,
             input:"",
             camera:false,
             count:0,
@@ -62,11 +77,16 @@ class CreatePost extends Component{
         
         this.openCamera = this.openCamera.bind(this)
         this.addUrl = this.addUrl.bind(this)
+        this.openImageLibrary = this.openImageLibrary.bind(this)
         
     
     }
     componentDidMount(){
         console.log(this.props.user);
+        
+    }
+    componentWillUpdate(){
+        console.log(this.state);
         
     }
     openCamera(){
@@ -144,7 +164,7 @@ class CreatePost extends Component{
             
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            
+                this.addUrl('image',response.uri)
                 console.log('source:',source);
                 
               }
@@ -178,7 +198,7 @@ class CreatePost extends Component{
             
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            
+                this.addUrl('image',response.uri)
                 console.log('source:',source);
                 
               }
@@ -186,6 +206,8 @@ class CreatePost extends Component{
     }
     addUrl(type,url){
 
+        console.log('addUrl is called')
+        
         let id = shortid.generate()
         
 
@@ -234,11 +256,15 @@ class CreatePost extends Component{
             return <RnCamera back={this.closeCamera.bind(this)}  update={(url)=>this.addUrl('image',url)}/>
         }else
         return(
+            <Root>
             <Container>
+                
+                
+
                 <Content>
                     
                     <View>
-                        <View style={[styles.vertical,{padding:10}]}>
+                        <View style={[styles.vertical,{padding:10,backgroundColor:'#fff'}]}>
                             <View style={styles.tumbnail}>
                                 <Image source={{uri:photoURI}} style={{width:55,height:55,borderRadius:50}}/>
                             </View>
@@ -249,20 +275,59 @@ class CreatePost extends Component{
                             </View>
                         </View>
                         <View>
-                            <View style={[styles.vertical,{padding:10}]}>
-                                <TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
-                                    <Text>TO:{this.state.to}</Text>
+                            <View style={[styles.vertical,{padding:10,backgroundColor:'#e8e8e8'}]}>
+                                <TouchableOpacity 
+                                    style={{margin:5,backgroundColor:'#7e97a8',paddingLeft:10,paddingRight:10,borderRadius:4,elevation:1}}
+                                    onPress={() =>
+                                        ActionSheet.show(
+                                          {
+                                            options: LEVEL,
+                                            cancelButtonIndex:3,
+                                            title: "Select Send Level"
+                                          },
+                                          buttonIndex => {
+                                            if(buttonIndex !== 3){
+                                                this.setState({ level: LEVEL[buttonIndex] });
+                                            }
+                                    
+                                            
+                                          }
+                                          
+                                        )}
+                                      >
+                                    
+                                    <Text style={{color:'#fff',fontWeight:'800'}}>TO: {this.state.level}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{marginLeft:10,padding:5,paddingLeft:10,paddingRight:10,borderWidth:2,borderRadius:10}}>
-                                    <Text>TYPE:{this.state.type}</Text>
+                                <TouchableOpacity 
+                                    style={{margin:5,backgroundColor:'#7e97a8',paddingLeft:10,paddingRight:10,borderRadius:4,elevation:1}}
+                                    onPress={() =>
+                                        ActionSheet.show(
+                                          {
+                                            options: TYPE,
+                                            cancelButtonIndex:5,
+                                            title: "Select Send Level"
+                                          },
+                                          buttonIndex => {
+                                            if(buttonIndex !== 5){
+                                                this.setState({ type: TYPE[buttonIndex] });
+                                            }
+                                    
+                                            
+                                          }
+                                          
+                                        )}
+                                      >
+                                    
+                                    <Text style={{color:'#fff',fontWeight:'800'}}>TYPE: {this.state.type}</Text>
+                                    
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={[styles.vertical,{padding:10}]}>
-                            <Input placeholder="What's on your mind?" value={this.state.input} onChangeText={text=>this.setState({input:text})}/>
+                        <View style={[styles.vertical,{padding:10,backgroundColor:'#f9f9f9'}]}>
+                            <Input multiline={true} placeholder="What's on your mind?" value={this.state.input} onChangeText={text=>this.setState({input:text})}/>
                         </View>
                         <View>
-                            
+                        
                             <UploadList changeStatus={this.changeStatus.bind(this)} setUpdateURL={this.setUpdateURL.bind(this)} attachments={this.state.attachments}/>
                         </View>
                     </View>
@@ -275,7 +340,7 @@ class CreatePost extends Component{
                             <Icon name='md-camera' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
                         <TouchableOpacity 
-                            onPress={this.openImageLibrary.bind(this)}
+                            onPress={this.openImageLibrary}
                         >
                             <Icon name='md-image' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
@@ -292,6 +357,7 @@ class CreatePost extends Component{
                     </View>
                 </Footer>
             </Container>
+            </Root>
         )
     }
 }
@@ -301,14 +367,19 @@ vertical:{
 	flexDirection:'row'
 },
 name:{
-	fontWeight:'800'
+	fontSize: 16,
+    color: '#000',
+    fontWeight:'500'
 },
 tumbnail:{
 
 },
 profileInfo:{
 	padding:10
-}
+},
+title: {
+    
+  },
 })
 const mapStateToProps = ({user})=>{
 return {

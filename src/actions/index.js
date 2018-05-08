@@ -6,6 +6,8 @@ import CustomAuth from '../Utils/auth'
 import { GoogleSignin } from 'react-native-google-signin';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { FETCH_POST , UPDATE_LIKES_POST ,UPDATE_USER_DETAILS} from './actions-type';
+
+import { sendPost } from './action-post'
  export const BASE_URL = 'https://backtick-api.herokuapp.com'
 
 
@@ -481,4 +483,8 @@ export async function checkSignIn(success,fail){
           
         }
   
+    }
+
+    export default actions = {
+        sendPost
     }
