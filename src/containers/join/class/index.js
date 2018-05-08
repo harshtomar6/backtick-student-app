@@ -2,7 +2,7 @@ import React,{ Component } from 'react'
 import { 
 View,
 Text,
-Button
+Button, StatusBar
  } from 'react-native'
 
  import {
@@ -12,6 +12,7 @@ Button
 import { connect } from 'react-redux'
  import {SignOut,getUser,joinClassToServer} from '../../../actions/'
  import RnCameraQr from '../../helper/rncameraqr'
+import { tintColor } from '../../../globals';
 class JoinClass extends Component{
     constructor(props){
         super(props)
@@ -31,11 +32,14 @@ class JoinClass extends Component{
             if(params.setHeader){
                 return {
                     title,
+                    headerTitleStyle: {
+                        color: tintColor
+                    },
                     headerRight: (
                         <Button
                           onPress={() => SignOut()}
                           title="SignOut"
-                          color="#000"
+                          color={tintColor}
                         />
                       )
                   }
@@ -50,11 +54,14 @@ class JoinClass extends Component{
         else{
             return {
                 title,
+                headerTitleStyle: {
+                    color: tintColor,
+                },
                 headerRight: (
                     <Button
                       onPress={() => SignOut()}
                       title="SignOut"
-                      color="#000"
+                      color={tintColor}
                     />
                   )
               }
@@ -99,8 +106,8 @@ class JoinClass extends Component{
         }
         else{
             return(
-            <View>
-                <View><Text>Join Class</Text></View>
+            <View style={{backgroundColor: '#fff', flex: 1}}>
+                <StatusBar backgroundColor={tintColor} />
                 <View>
                     <Item>
                         <Input placeholder='CLASS CODE' onChangeText={text=>this.setState({code:text})} value={this.state.code}/>

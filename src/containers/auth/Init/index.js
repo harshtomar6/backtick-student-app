@@ -1,20 +1,21 @@
 import React,{ Component } from 'react'
 import {
     View,
-    Text,
     ScrollView,
-    Button,
     Image,
     CameraRoll,
     TouchableHighlight,
     PermissionsAndroid,
-    Alert
+    Alert,
+    Button, Text, StatusBar,
+    TouchableNativeFeedback
 } from 'react-native'
 import _ from 'lodash'
 import RnCamera from '../../helper/rncamera'
 import { styles } from '../../../styles/'
-import { Input ,Label,Item } from 'native-base';
+import { Input ,Label,Item, Container} from 'native-base';
 import { getUser , SignOut,sendUpdateToServer,uploadToFirebase} from '../../../actions/'
+import { tintColor } from '../../../globals';
 
 class Init extends Component{
     constructor(props){
@@ -25,7 +26,7 @@ class Init extends Component{
             phone:'',
             photoURI:'',
             getPhoto:false,
-            readyToSend:true,
+            readyToSend:false,
             token:'',
             key:''
         }
@@ -41,11 +42,14 @@ class Init extends Component{
             if(params.setHeader){
                 return {
                     title,
+                    headerTitleStyle: {
+                        color: tintColor
+                    },
                     headerRight: (
                         <Button
                           onPress={() => SignOut()}
+                          color={tintColor}
                           title="SignOut"
-                          color="#000"
                         />
                       )
                   }
@@ -60,11 +64,14 @@ class Init extends Component{
         else{
             return {
                 title,
+                headerTitleStyle: {
+                    color: tintColor
+                },
                 headerRight: (
                     <Button
                       onPress={() => SignOut()}
                       title="SignOut"
-                      color="#000"
+                      color={tintColor}
                     />
                   )
               }
@@ -132,8 +139,6 @@ class Init extends Component{
         else{
             this.state.photoURI = this.state.user.photoURL
         }
-        
-        console.log(this.state);
         
         sendUpdateToServer(this.state)
     }
@@ -218,7 +223,8 @@ class Init extends Component{
                 photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
             }
             return(
-                <View>
+                <Container style={{backgroundColor: '#fff', flex: 1}}>
+                    <StatusBar backgroundColor={tintColor}/>
                     <ScrollView>
                         <TouchableHighlight 
                             onPress={()=>this.requestReadAndWritePermission()}
@@ -240,8 +246,16 @@ class Init extends Component{
                         </Item>
                         <Input keyboardType='numeric' placeholder={'Phone No'} value={this.state.phone} onChangeText={e=>this.setState({phone:e})}/>
                     </ScrollView>
-                    <View><Button disabled={this.state.readyToSend} onPress={this.onPressUpdate.bind(this)} title="UPDATE"/></View>
-                </View>
+                    <TouchableNativeFeedback disabled={this.state.readyToSend}
+                        onPress={this.onPressUpdate.bind(this)}
+                        background={TouchableNativeFeedback.SelectableBackground()}>
+                    <View style={{width: '100%', 
+                        backgroundColor: this.state.readyToSend ? '#999' : tintColor, 
+                        alignItems: 'center', padding: 14}}>
+                        <Text style={{color: '#fff'}}>UPDATE</Text>
+                    </View>
+                    </TouchableNativeFeedback>
+                </Container>
             )
         }   
         else{

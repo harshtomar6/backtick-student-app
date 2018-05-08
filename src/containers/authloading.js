@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {
     View,
-    AppState
+    AppState, StatusBar
 } from 'react-native'
 import _ from 'lodash'
 import {
@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import {updateUser} from '../actions' 
 import {addListener} from '../Utils/events'
 import { checkSignIn } from '../actions/'
+import { tintColor } from '../globals';
 
 class AuthLoading extends Component{
 
@@ -63,7 +64,8 @@ class AuthLoading extends Component{
     render(){
         return(
             <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                <Spinner color='blue' />
+            <StatusBar backgroundColor={tintColor} />
+                <Spinner color={tintColor} />
             </View>
         )
     }
