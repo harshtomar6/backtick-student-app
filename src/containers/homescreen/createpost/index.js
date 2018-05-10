@@ -13,9 +13,14 @@ import {
 import _ from 'lodash'
 import shortid from 'shortid'
 import { Root,Container, Content, Footer,Input,Icon,ActionSheet,Button as NButton } from 'native-base';
-import RnCamera from './rncamera'
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
+
+//Local imports
+
+import AvatarImg from '../../../img/avatar.jpeg'
+import RnCamera from './rncamera'
 import tintColor from '../../../globals'
 import UploadList from './uploadlist'
 
@@ -164,8 +169,8 @@ class CreatePost extends Component{
             
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-                this.addUrl('image',response.uri)
-                console.log('source:',source);
+                this.addUrl(response.type,response.fileName,response.uri)
+                console.log('response:',response);
                 
               }
           });
@@ -204,7 +209,22 @@ class CreatePost extends Component{
               }
           });
     }
-    addUrl(type,url){
+
+    openDocumentPicker(){
+        DocumentPicker.show({
+            filetype: [DocumentPickerUtil.allFiles()],
+          },(error,res) => {
+            console.log(error)
+            // Android
+            if(res){
+                this.addUrl(res.type,res.fileName,res.uri)
+            }
+            console.log(
+               res
+            );
+          });
+    }
+    addUrl(type,fileName,url){
 
         console.log('addUrl is called')
         
@@ -218,13 +238,29 @@ class CreatePost extends Component{
                     url,
                     status:false,
                     id,
+                    fileName,
                     uploadURL:''
                 }
             ],
             count:this.state.count+1
         })
     }
-    
+    removeUrl(id){
+        let newAttachments = this.state.attachments.filter(item=>{
+            if(item.id === id){
+                return false
+            }
+            else{
+                return true
+            }
+        })
+
+        this.setState({
+            attachments:[...newAttachments],
+            count:this.state.count-1
+        })
+
+    }
     changeStatus(id,status){
         this.state.attachments.map(item=>{
             if(item.id === id){
@@ -244,16 +280,17 @@ class CreatePost extends Component{
     }
     render(){
         let photoURI = this.props.user.user.photoURL
-        const domain = photoURI.substring(8).split('/')[0]
-        if(domain === 'graph.facebook.com'){
-            photoURI = `${photoURI}?width=200`
-        }
-        else{
-            photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
+        if(photoURI){
+            if(photoURI.includes('graph.facebook.com')){
+                photoURI = `${photoURI}?width=200`
+            }
+            else{
+                photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
+            }
         }
 
         if(this.state.camera){
-            return <RnCamera back={this.closeCamera.bind(this)}  update={(url)=>this.addUrl('image',url)}/>
+            return <RnCamera back={this.closeCamera.bind(this)}  update={(url)=>this.addUrl('image/jpeg',null,url)}/>
         }else
         return(
             <Root>
@@ -266,7 +303,7 @@ class CreatePost extends Component{
                     <View>
                         <View style={[styles.vertical,{padding:10,backgroundColor:'#fff'}]}>
                             <View style={styles.tumbnail}>
-                                <Image source={{uri:photoURI}} style={{width:55,height:55,borderRadius:50}}/>
+                                <Image source={photoURI === null?AvatarImg:{uri:photoURI}} style={{width:55,height:55,borderRadius:50}}/>
                             </View>
                             <View style={styles.profileInfo}>
                                 <Text style={styles.name}> 
@@ -328,7 +365,7 @@ class CreatePost extends Component{
                         </View>
                         <View>
                         
-                            <UploadList changeStatus={this.changeStatus.bind(this)} setUpdateURL={this.setUpdateURL.bind(this)} attachments={this.state.attachments}/>
+                            <UploadList changeStatus={this.changeStatus.bind(this)} removeUrl={this.removeUrl.bind(this)} setUpdateURL={this.setUpdateURL.bind(this)} attachments={this.state.attachments}/>
                         </View>
                     </View>
                 </Content>
@@ -348,7 +385,7 @@ class CreatePost extends Component{
                             <Icon name='md-videocam' style={{color:'#749bbf'}}/>
                            
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.openDocumentPicker.bind(this)}>
                            <Icon name='md-document' style={{color:'#749bbf'}}/>
                         </TouchableOpacity>
                         <TouchableOpacity>

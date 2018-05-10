@@ -8,7 +8,7 @@ import Bulletin from './containers/homescreen/bulletin/'
 import Notification from './containers/homescreen/notification/'
 import Save from './containers/homescreen/save/'
 
-//Joins
+//Joins imports
 import JoinClass from './containers/join/class'
 //Auth imports
 import UpdateInfo from './containers/auth/Init/updateinfo/'
@@ -74,7 +74,7 @@ export const Home = TabNavigator(
 
 	},
 	tabBarComponent: TabBarBottom,
-	initialRouteName :'Bulletin',
+	initialRouteName :'CreatePost',
 	tabBarPosition: 'bottom',
 	animationEnabled: true,
 	swipeEnabled: true,

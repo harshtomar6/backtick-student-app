@@ -8,12 +8,13 @@ import {
     Spinner
 } from 'native-base'
 import { connect } from "react-redux";
-
 //Local imports
 import {updateUser} from '../actions' 
 import {addListener} from '../Utils/events'
 import { checkSignIn } from '../actions/'
 import { tintColor } from '../globals';
+
+
 
 class AuthLoading extends Component{
 

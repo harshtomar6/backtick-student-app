@@ -4,21 +4,24 @@ View,
 Text,
 Image,
 TouchableOpacity,
-Dimensions
+Dimensions,
+StyleSheet
  } from 'react-native'
-
-import { uploadToFirebase } from '../../../actions'
 import {Icon} from 'native-base'
 import PercentageCircle from 'react-native-percentage-circle'
-class UploadImage extends Component{
+
+//local uploads
+import { uploadToFirebase } from '../../../actions'
+import PdfImg from '../../../img/pdf.png'
+import DocImg from '../../../img/doc.png'
+class UploadFile extends Component{
   constructor(props){
     super(props)
     this.state = {
       percentage:0,
       uploadURL:'',
       firebaseRef:null,
-      status:'uploading',
-      
+      status:'uploading'
     }
 
     this.renderStatus = this.renderStatus.bind(this)
@@ -32,11 +35,9 @@ class UploadImage extends Component{
   }
 
   async componentDidMount(){
-      console.log('componentDidMount');
-      
       this.props.changeStatus(this.props.id,true)
       if(!this.props.status){
-      let url = await uploadToFirebase(this.props.url,this.props.type,'post',this.setPercentage.bind(this),this.setFirebaseRef.bind(this))
+      let url = await uploadToFirebase(this.props.url,this.props.type ,'post',this.setPercentage.bind(this),this.setFirebaseRef.bind(this))
         this.props.setUpdateURL(this.props.id,url)
         this.setState({
           uploadURL:url,
@@ -86,27 +87,23 @@ class UploadImage extends Component{
     if(this.state.status === 'uploading'){
       return(
         <View style={{position:'relative',flex:1,alignItems:'center',justifyContent:'center'}}>
-          <PercentageCircle 
-            radius={35} 
-            percent={this.state.percentage} 
-            bgcolor={'#00b6ff'} 
-            innerColor={'#fff'} 
-            borderWidth={3} 
-            color={"#bababa"}
-            >
+          <PercentageCircle radius={35} percent={this.state.percentage} bgcolor={'#00b6ff'} innerColor={'#fff'} borderWidth={3} color={"#bababa"}>
             <Text>{parseInt(this.state.percentage)}</Text>
           </PercentageCircle> 
         </View>
       )
     }else if(this.state.status === 'uploaded'){
       return(
+        
         <View style={{position:'absolute'}}>
           <TouchableOpacity onPress={this.deleteUpload.bind(this)} style={{backgroundColor:'white',borderRadius:50,opacity:0.5,margin:8,paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:5}}>
             <Icon name='md-trash'/>
           </TouchableOpacity>
         </View>
+        
+        
       )
-    }else if(this.state.status === 'deleting'){
+    } else if(this.state.status === 'deleting'){
       return(
         <View style={{position:'relative',flex:1,alignItems:'center',justifyContent:'center'}}>
           <View style={{backgroundColor:'#fff',borderRadius:50,padding:25}}>
@@ -117,14 +114,29 @@ class UploadImage extends Component{
       )
     }
   }
-  render(){
+
+  renderInital(){
+    let img = 'file'
+    switch(this.props.type){
+      case "application/pdf": 
+        img = PdfImg
+        break
+      case "application/msword": 
+        img = DocImg
+        break
+    }
+
     return(
       <View>
-        <TouchableOpacity activeOpacity={0.8} style={{flex: 1,height: 250}}
+        <TouchableOpacity activeOpacity={0.8} style={styles.fileContainer}
                   >
-                  <Image source={{uri:this.props.url}} 
-                    style={{height:'100%',width: '100%'}} resizeMode="cover"/>
-                </TouchableOpacity>
+          <View >
+            <Image source={img} 
+              style={{height:80,width: 80}} resizeMode="cover"/>
+            <View>
+            </View>
+          </View>
+        </TouchableOpacity>
         
         <View style={{position:'absolute',display:'flex',height: '100%', width: '100%'}}>
           
@@ -134,6 +146,22 @@ class UploadImage extends Component{
         </View> 
       </View>
     )
+    
+  }
+  render(){
+    return this.renderInital()
+    
   }
 }
-export default UploadImage
+
+const styles = StyleSheet.create({
+  fileContainer:{
+    flex: 1,
+    height: 120,
+    backgroundColor:'grey',
+    alignItems:'center',
+    justifyContent:'center',
+    marginBottom:4
+  }
+})
+export default UploadFile

@@ -11,6 +11,7 @@ import {
     TouchableNativeFeedback
 } from 'react-native'
 import _ from 'lodash'
+import AvatarImg from '../../../img/avatar.jpeg'
 import RnCamera from '../../helper/rncamera'
 import { styles } from '../../../styles/'
 import { Input ,Label,Item, Container} from 'native-base';
@@ -215,13 +216,15 @@ class Init extends Component{
         }
         if(this.state.user !== null)
         {   const photoURI = this.state.user.photoURL
-            const domain = photoURI.substring(8).split('/')[0]
-            if(domain === 'graph.facebook.com'){
-                photoURI = `${photoURI}?width=999`
+            if(photoURI){
+                if(photoURI.includes('graph.facebook.com')){
+                    photoURI = `${photoURI}?width=999`
+                }
+                else{
+                    photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
+                }
             }
-            else{
-                photoURI = `https://ce8d52bcc.cloudimg.io/width/500/x/${photoURI}`
-            }
+            
             return(
                 <Container style={{backgroundColor: '#fff', flex: 1}}>
                     <StatusBar backgroundColor={tintColor}/>
@@ -229,7 +232,7 @@ class Init extends Component{
                         <TouchableHighlight 
                             onPress={()=>this.requestReadAndWritePermission()}
                             style={styles.updateInfoAvatar}>
-                            <Image source={{uri:this.state.photoURI===''?photoURI:this.state.photoURI}}  style={{width: 200, height: 200,borderRadius:200}} />
+                            <Image source={photoURI === null?AvatarImg:{uri:this.state.photoURI===''?photoURI:this.state.photoURI}}  style={{width: 200, height: 200,borderRadius:200}} />
                         </TouchableHighlight>
                         <Item style={styles.input}>
                         <Input  placeholder={'email'} value={this.state.user.email}/> 

@@ -168,7 +168,7 @@ export function createUserWithEmailAndPassword(values,onSuccess,onFail){
 }
 
 // Upload to firebase 
-export   function uploadToFirebase(file,contentType,str){
+export   function uploadToFirebase(file,contentType,str,callback,callbackRef){
     
     let metadata = {
         contentType
@@ -177,6 +177,7 @@ export   function uploadToFirebase(file,contentType,str){
     const r = Math.random()*Number.parseInt((Date.now()))
     const storage = firebase.storage().ref().child(`${str}${r}.jpg`)
     var uploadTask = storage.put(file,metadata)
+    callbackRef(storage)
     return new Promise((resolve,reject)=>{
         // Register three observers:
         // 1. 'state_changed' observer, called any time the state changes
@@ -184,9 +185,11 @@ export   function uploadToFirebase(file,contentType,str){
         // 3. Completion observer, called on successful completion
         // Listen for state changes, errors, and completion of the upload.
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        
         function(snapshot) {
             // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            callback(progress)
             console.log('Upload is ' + progress + '% done');
             switch (snapshot.state) {
             case firebase.storage.TaskState.PAUSED: // or 'paused'
