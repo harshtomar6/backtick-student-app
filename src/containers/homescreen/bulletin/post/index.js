@@ -5,16 +5,16 @@ import Tags from './tags';
 import CardBody from './cardBody';
 import CardFooter from './cardFooter';
 
-class Post extends React.Component {  
+export default class Post extends React.Component {  
   render(){
     return (
       <View style={styles.card}>
         <CardHead thumbnail={this.props.thumbnail} userName={this.props.userName} 
-          time={this.props.time}/>
+          time={this.props.time} navigation={this.props.navigation} userid={this.props.userId}/>
         <Tags tag={this.props.tag} />
         <CardBody text={this.props.text} attachments={this.props.attachments}
           likes={this.props.likes} comments={this.props.comments}/>
-        <CardFooter />
+        <CardFooter postId={this.props.postId} likes={this.props.likes} />
       </View>
     );
   }
@@ -41,5 +41,3 @@ Post.defaultProps = {
   likes: 0,
   comments: 0
 }
-
-export default Post;

@@ -1,8 +1,9 @@
 import React from 'react';
-import { StackNavigator , SwitchNavigator, TabNavigator,TabBarBottom  } from 'react-navigation'
+import { StackNavigator, SwitchNavigator, TabNavigator, TabBarBottom } from 'react-navigation'
 import { Icon } from 'native-base';
 //HomeScreen  imports
 import HomeScreen from './containers/homescreen/'
+import Profile from './containers/profile'
 import CreatePost from './containers/homescreen/createpost/'
 import Bulletin from './containers/homescreen/bulletin/'
 import Notification from './containers/homescreen/notification/'
@@ -22,137 +23,146 @@ import Auth from './containers/auth/'
 import { tintColor } from './globals';
 
 export const Home = TabNavigator(
-{
-	CreatePost:{
-			screen:CreatePost
-	},
-	Bulletin:{
-			screen:Bulletin
-	},
-	Notification:{
-			screen:Notification
-	},
-	Schedules:{
-			screen:Bulletin
-	},
-	Saved:{
-			screen:Save
-	},
+	{
+		CreatePost: {
+			screen: CreatePost
+		},
+		Bulletin: {
+			screen: Bulletin
+		},
+		Notification: {
+			screen: Notification
+		},
+		Schedules: {
+			screen: Bulletin
+		},
+		Saved: {
+			screen: Save
+		},
 
-},
-{
-	navigationOptions: ({ navigation }) => ({
-		tabBarIcon: ({ focused, tintColor }) => {
-			const { routeName } = navigation.state;
-			let iconName;
-			if (routeName === 'CreatePost')
-				iconName = `ios-add-circle${focused ? '' : '-outline'}`;
-			else if (routeName === 'Bulletin')
-				iconName = `ios-albums${focused ? '' : '-outline'}`;
-			else if(routeName === 'Notification')
+	},
+	{
+		navigationOptions: ({ navigation }) => ({
+			tabBarIcon: ({ focused, tintColor }) => {
+				const { routeName } = navigation.state;
+				let iconName;
+				if (routeName === 'CreatePost')
+					iconName = `ios-add-circle${focused ? '' : '-outline'}`;
+				else if (routeName === 'Bulletin')
+					iconName = `ios-albums${focused ? '' : '-outline'}`;
+				else if (routeName === 'Notification')
 					iconName = `ios-notifications${focused ? '' : '-outline'}`;
-			else if(routeName === 'Schedules')
+				else if (routeName === 'Schedules')
 					iconName = `ios-calendar${focused ? '' : '-outline'}`
-			else if(routeName === 'Saved')
+				else if (routeName === 'Saved')
 					iconName = `ios-bookmark${focused ? '' : '-outline'}`
 
-			// You can return any component that you like here! We usually use an
-			// icon component from react-native-vector-icons
-			return <Icon name={iconName} style={{color: tintColor}}/>;
-		},
-		tabStyle :{
-		}
-	}),
-	tabBarOptions: {
-		activeTintColor: tintColor,
-		inactiveTintColor: '#666',
-		pressColor :'red',
-		showLabel: true,
-		style: {
-			backgroundColor: 'white',
-		}
+				// You can return any component that you like here! We usually use an
+				// icon component from react-native-vector-icons
+				return <Icon name={iconName} style={{ color: tintColor }} />;
+			},
+			tabStyle: {
+			}
+		}),
+		tabBarOptions: {
+			activeTintColor: tintColor,
+			inactiveTintColor: '#666',
+			pressColor: 'red',
+			showLabel: true,
+			style: {
+				backgroundColor: 'white',
+			}
 
-	},
-	tabBarComponent: TabBarBottom,
-	initialRouteName :'Bulletin',
-	tabBarPosition: 'bottom',
-	animationEnabled: true,
-	swipeEnabled: true,
-	allowFontScaling:true
-}
+		},
+		tabBarComponent: TabBarBottom,
+		initialRouteName: 'Bulletin',
+		tabBarPosition: 'bottom',
+		animationEnabled: true,
+		swipeEnabled: true,
+		allowFontScaling: true,
+	}
 )
 
 
 export const SingedIn = StackNavigator(
-{   
+	{
 
-	Home:{
-			screen:Home
+		Home: {
+			screen: Home
+		},
+		Profile: {
+			screen: Profile
+		}
+	},
+	{
+		initialRouteName: 'Home',
+		navigationOptions: {
+			headerTintColor: tintColor
+		}
 	}
-},
-{
-	initialRouteName:'Home'
-}
 )
 
 export const Join = StackNavigator({
-Join:{
-	screen:JoinClass
-}
+	Join: {
+		screen: JoinClass
+	}
 })
 export const SingedOut = StackNavigator(
-{
-	Auth:{
-			screen:Auth
+	{
+		Auth: {
+			screen: Auth
+		},
+		SignUp: {
+			screen: SignUp
+		},
+		VerifyCode: {
+			screen: VerifyCode
+		},
+		ConfirmEmail: {
+			screen: ConfirmEmail
+		}
 	},
-	SignUp:{
-			screen:SignUp
-	},
-	VerifyCode:{
-			screen:VerifyCode
-	},
-	ConfirmEmail:{
-			screen:ConfirmEmail
+	{
+		initialRouteName: 'Auth',
+		navigationOptions: {
+			headerTintColor: tintColor
+		}
 	}
-},
-{
-	initialRouteName:'Auth'
-}
 )
 
 export const InitScreen = StackNavigator(
-{   
-	Init:{
-			screen:Init
-	},
-	UpdateInfo:{
-			screen:UpdateInfo
+	{
+		Init: {
+			screen: Init
+		},
+		UpdateInfo: {
+			screen: UpdateInfo
+		}
 	}
-}
 )
-export const RootNavigator =  SwitchNavigator(
-	{   
-			AuthLoading:{
-					screen:AuthLoading
-			},
-			SignedIn:{
-					screen : SingedIn
-			},
-			SignedOut:{
-					screen : SingedOut
-			},
-			VerifyEmail:{
-					screen:VerifyEmail
-			},
-			InitScreen:{
-					screen:InitScreen
-			},
-			Join:{
-					screen:Join
-			}
+export const RootNavigator = SwitchNavigator(
+	{
+		AuthLoading: {
+			screen: AuthLoading
+		},
+		SignedIn: {
+			screen: SingedIn
+		},
+		SignedOut: {
+			screen: SingedOut
+		},
+		VerifyEmail: {
+			screen: VerifyEmail
+		},
+		InitScreen: {
+			screen: InitScreen
+		},
+		Join: {
+			screen: Join
+		}
 
 	},
 	{
-			initialRouteName:'AuthLoading'
+		initialRouteName: 'AuthLoading'
 	}
 )

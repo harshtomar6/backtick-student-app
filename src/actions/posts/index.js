@@ -1,10 +1,14 @@
 import * as actionTypes from './../actions-type';
 import { BASE_URL } from './../../globals';
+import io from 'socket.io-client';
+
+// Connect Sockets
+const socket = io(BASE_URL);
 
 export function getPosts(){
 	return dispatch => {
 		dispatch({type: actionTypes.GET_POST_REQUEST});
-		return fetch(`${BASE_URL}/post/page/1?limit=5`)
+		return fetch(`${BASE_URL}/post/page/1?limit=4`)
 			.then(res => res.json())
 			.then(resData => {
 				if(resData.err)
@@ -53,11 +57,29 @@ export function getPostsByPagination(data){
 	}
 }
 
+export function likePost(data){
+	return dispatch => {
+		dispatch({
+			type: actionTypes.UPDATE_LIKES_POST,
+			payload: data
+		});
+		socket.emit('/post/like', data);
+	}
+}
+
 export function updateLikes(data){
   return dispatch=>{
       dispatch({
-          type:UPDATE_LIKES_POST,
+          type: actionTypes.UPDATE_LIKES_POST,
           payload:data
       })
   }
 }
+
+socket.on('like-success', data => {
+	alert('liked');
+});
+
+socket.on('like-err', err => {
+	alert('err');
+})
