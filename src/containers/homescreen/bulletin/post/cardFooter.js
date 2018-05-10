@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Icon } from 'native-base';
+import { connect } from 'react-redux';
+import { likePost } from './../../../../actions';
 
-export default class CardFooter extends React.Component {
+class CardFooter extends React.Component {
 
   constructor(){
     super();
@@ -12,8 +14,17 @@ export default class CardFooter extends React.Component {
     }
   }
 
+  componentDidMount(){
+    if(this.props.likes.includes(this.props.user._id))
+      this.setState({liked: true});
+  }
+
   handleLike = () => {
     this.setState({liked: !this.state.liked})
+    this.props.likePost({
+      postId: this.props.postId,
+      userId: this.props.user._id
+    });
   }
 
   handleComment = () => {
@@ -60,4 +71,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row'
   }
-})
+});
+
+const mapStateToProps = state => ({
+  posts: state.posts,
+  user: state.user.user
+});
+
+export default connect( mapStateToProps, { likePost })(CardFooter);

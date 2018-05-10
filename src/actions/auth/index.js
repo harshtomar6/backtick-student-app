@@ -168,7 +168,7 @@ export function createUserWithEmailAndPassword(values,onSuccess,onFail){
 }
 
 // Upload to firebase 
-export   function uploadToFirebase(file,contentType,str){
+export   function uploadToFirebase(file,contentType,str, callback){
     
     let metadata = {
         contentType
@@ -187,6 +187,7 @@ export   function uploadToFirebase(file,contentType,str){
         function(snapshot) {
             // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            callback(progress);
             console.log('Upload is ' + progress + '% done');
             switch (snapshot.state) {
             case firebase.storage.TaskState.PAUSED: // or 'paused'
