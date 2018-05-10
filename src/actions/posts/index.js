@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 // Connect Sockets
 const socket = io(BASE_URL);
 
-export function getPosts(){
+export function getPosts(storedState){
 	return dispatch => {
 		dispatch({type: actionTypes.GET_POST_REQUEST});
 		return fetch(`${BASE_URL}/post/page/1?limit=4`)
@@ -13,9 +13,9 @@ export function getPosts(){
 			.then(resData => {
 				if(resData.err)
 					dispatch({
-						type: actionTypes.GET_POST_ERROR,
-						payload: resData.err 
-					});
+						type: actionTypes.GET_POST_SUCCESS,
+						payload: storedState.data
+					})
 				else
 					dispatch({
 						type: actionTypes.GET_POST_SUCCESS,
@@ -24,9 +24,11 @@ export function getPosts(){
 			})
 			.catch(err => {
 				dispatch({
-					type: actionTypes.GET_POST_ERROR,
-					payload: JSON.stringify(err)
+					type: actionTypes.GET_POST_SUCCESS,
+					payload: storedState.data
 				})
+				console.log(err);
+				
 			})
 	}
 }

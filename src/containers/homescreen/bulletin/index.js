@@ -29,7 +29,9 @@ class Bulletin extends Component{
   }
 
   componentDidMount(){
-    this.props.getPosts();
+    console.log(this.props.posts);
+
+    this.props.getPosts(this.props.posts);
     this.props.navigation.setParams({showMore: this.showMore})
   }
 

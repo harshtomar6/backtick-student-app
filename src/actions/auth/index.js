@@ -168,7 +168,7 @@ export function createUserWithEmailAndPassword(values,onSuccess,onFail){
 }
 
 // Upload to firebase 
-export   function uploadToFirebase(file,contentType,str,callback,callbackRef){
+export function uploadToFirebase(file,contentType,str,callback,callbackRef){
     
     let metadata = {
         contentType
@@ -301,11 +301,14 @@ export async function checkSignIn(success,fail){
         
         }
         else{
+            console.log('Unable to find user');
+            
             fail()
         }
     }
     catch(err){
-        fail()
+        console.log('Unable to find user');
+        fail(err)
     }
 
     /*

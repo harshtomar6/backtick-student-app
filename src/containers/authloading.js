@@ -45,21 +45,24 @@ class AuthLoading extends Component{
           if(val === "allok"){
             
             if(data.user.phone === '' || data.user.phone === null || data.user.phone === 'none'){
+                console.log('Moving to InitScreen');
                 this.props.navigation.navigate('InitScreen')
             }
             else if(!data.user.classJoined){
-                
+                console.log('Moving to Join');
                 this.props.navigation.navigate('Join')
             }
             else {
                 this.props.updateUser(data)
+                console.log('Moving to SignedIn');
                 this.props.navigation.navigate('SignedIn')
             }
                 
           }
       }
 
-      onFail(){
+      onFail(error){
+        console.log('Moving to SignedOut',error);
         this.props.navigation.navigate('SignedOut')
       }
     render(){

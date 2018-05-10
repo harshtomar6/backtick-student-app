@@ -1,12 +1,13 @@
 import React , { Component } from 'react'
-import { compose , createStore , applyMiddleware } from 'redux'
+
 import { Provider } from 'react-redux'
-import thunk from 'redux-thunk'
+
 import reducers from './reducers'
 import App from './containers/App'
+import { PersistGate } from 'redux-persist/integration/react'
+import {store,persistor} from './configureStore'
+import configureStore from './configureStore'
 
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default class Init extends Component{
     constructor(props){
@@ -19,8 +20,11 @@ export default class Init extends Component{
     render(){
 
         return(
-            <Provider store={createStore(reducers,composeEnhancers(applyMiddleware(thunk)))}>
-                <App />
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+                    <App />
+                </PersistGate>                
+                    
             </Provider>
         )
     }
