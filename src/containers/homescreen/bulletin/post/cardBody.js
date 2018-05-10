@@ -11,7 +11,7 @@ export default class CardBody extends React.Component {
         <Attachment attachments={this.props.attachments} />
         <View style={styles.likesWrap}>
           <Text style={{fontSize: 12}}>
-            {this.props.likes} likes | {this.props.comments} comments
+            {this.props.likes.length} likes | {this.props.comments.length} comments
           </Text>
         </View>
       </View>

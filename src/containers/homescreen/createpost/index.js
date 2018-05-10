@@ -1,14 +1,14 @@
-import React,{ Component } from 'react'
+import React, { Component } from 'react'
 import {
-    View,
-    Text,
-    Button,
-    TouchableOpacity,
-    Image,
-    StyleSheet,
-    FlatList,
-    Picker,
-    Dimensions
+	View,
+	Text,
+	Button,
+	TouchableOpacity,
+	Image,
+	StyleSheet,
+	FlatList,
+	Picker,
+	Dimensions
 } from 'react-native'
 import _ from 'lodash'
 import shortid from 'shortid'
@@ -26,124 +26,61 @@ import UploadList from './uploadlist'
 
 var LEVEL = ["Class", "Department", "College"];
 var TYPE = ["Notes", "Assignments", "Syllabus"];
-class CreatePost extends Component{
-    static navigationOptions = ({ navigation }) => {
-        const { params } = navigation.state;
-        let title = 'CreatePost'
-        if(params){
-            if(params.setHeader){
-                return {
-                    title,
-                    headerTitleStyle: {
-                        color: tintColor
-                    },
-                    headerRight: (
-                        <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
-                            <Icon name='md-send'/>
-                        </TouchableOpacity>
-                      )
-                  }
-            }
-            else{
-                return {
-                    title,
-                    header:null,
-                    tabBarVisible:false,
-                    swipeEnabled: false
-                }
-            }
-        }
-        else{
-            return {
-                title,
-                headerTitleStyle: {
-                    color: tintColor
-                },
-                headerRight: (
-                    <TouchableOpacity style={{paddingRight:15,paddingLeft:10}}>
-                        <Icon name='md-send'/>
-                    </TouchableOpacity>
-                  )
-              }
-        }
+class CreatePost extends Component {
+	static navigationOptions = ({ navigation }) => {
+		const { params } = navigation.state;
+		let title = 'New Post'
+		if (params) {
+			if (params.setHeader) {
+				return {
+					title,
+					headerRight: (
+						<NButton style={{ height: '100%', paddingHorizontal: 5 }} transparent>
+							<Icon name='md-send' style={{ color: tintColor }} />
+						</NButton>
+					)
+				}
+			}
+			else {
+				return {
+					title,
+					header: null,
+					tabBarVisible: false,
+					swipeEnabled: false
+				}
+			}
+		}
+		else {
+			return {
+				title,
+				headerRight: (
+					<NButton style={{ height: '100%', paddingHorizontal: 5 }} transparent>
+						<Icon name='md-send' style={{ color: tintColor }} />
+					</NButton>
+				)
+			}
+		}
 
-      };
-    constructor(props){
-        super(props)
-        this.state={
-            level:LEVEL[0],
-            type:'Notes',
-            typeSelector:false,
-            input:"",
-            camera:false,
-            count:0,
-            attachments:[]
-        }
-        
-        this.openCamera = this.openCamera.bind(this)
-        this.addUrl = this.addUrl.bind(this)
-        this.openImageLibrary = this.openImageLibrary.bind(this)
-        
+    };
     
-    }
-    componentDidMount(){
-        console.log(this.props.user);
-        
-    }
-    componentWillUpdate(){
-        console.log(this.state);
-        
-    }
-    openCamera(){
-        console.log("Open Camera is called");
-        this.props.navigation.setParams({setHeader: false})
-        this.setState({
-            camera:true
-        })
+	constructor(props) {
+		super(props)
+		this.state = {
+			level: LEVEL[0],
+			type: 'Notes',
+			typeSelector: false,
+			input: "",
+			camera: false,
+			count: 0,
+			attachments: []
+		}
+
+		this.openCamera = this.openCamera.bind(this)
+		this.addUrl = this.addUrl.bind(this)
+		this.openImageLibrary = this.openImageLibrary.bind(this)
     }
 
-    closeCamera(){
-        this.props.navigation.setParams({setHeader: true})
-        this.setState({
-            camera:false
-        })
-
-    }
-    openCameraVideo(){
-        let options = {
-            title: 'Select Avatar',
-            customButtons: [
-              {name: 'fb', title: 'Choose Photo from Facebook'},
-            ],
-            storageOptions: {
-              skipBackup: true,
-              path: 'images'
-            },
-            mediaType:'video'
-          };
-        ImagePicker.launchCamera(options, (response)  => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-              }
-              else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-              }
-              else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-              }
-              else {
-                let source = { uri: response.uri ,url:response.origURL};
-            
-                // You can also display the image using data:
-                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            
-                console.log('source:',source);
-                
-              }
-          });
-    }
-    openImageLibrary(){
-
+    openImageLibrary() {
         let options = {
             title: 'Select Avatar',
             customButtons: [
@@ -175,41 +112,15 @@ class CreatePost extends Component{
               }
           });
     }
+	
+	componentDidMount() {
+		console.log(this.props.user);
 
-    openImagePicker(){
+	}
+	componentWillUpdate() {
+		console.log(this.state);
 
-        let options = {
-            title: 'Select Avatar',
-            customButtons: [
-              {name: 'fb', title: 'Choose Photo from Facebook'},
-            ],
-            storageOptions: {
-              skipBackup: true,
-              path: 'images'
-            }
-          };
-        ImagePicker.showImagePicker(options, (response)  => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-              }
-              else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-              }
-              else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-              }
-              else {
-                let source = { uri: response.uri };
-            
-                // You can also display the image using data:
-                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-                this.addUrl('image',response.uri)
-                console.log('source:',source);
-                
-              }
-          });
     }
-
     openDocumentPicker(){
         DocumentPicker.show({
             filetype: [DocumentPickerUtil.allFiles()],
@@ -224,13 +135,27 @@ class CreatePost extends Component{
             );
           });
     }
+    
+	
+	openCamera() {
+		console.log("Open Camera is called");
+		this.props.navigation.setParams({ setHeader: false })
+		this.setState({
+			camera: true
+		})
+	}
+
+	closeCamera() {
+		this.props.navigation.setParams({ setHeader: true })
+		this.setState({
+			camera: false
+		})
+    }
+
     addUrl(type,fileName,url){
-
         console.log('addUrl is called')
-        
-        let id = shortid.generate()
-        
 
+		let id = shortid.generate()
         this.setState({
             attachments:[...this.state.attachments,
                 {   
@@ -245,6 +170,7 @@ class CreatePost extends Component{
             count:this.state.count+1
         })
     }
+    
     removeUrl(id){
         let newAttachments = this.state.attachments.filter(item=>{
             if(item.id === id){
@@ -266,18 +192,16 @@ class CreatePost extends Component{
             if(item.id === id){
                 item.status = status
             }
+    })}
+    
+    setUpdateURL(id, uploadurl) {
+		this.state.attachments.map(item => {
+			if (item.id === id) {
+				item.uploadURL = uploadurl
+			}
 
-        })
-    }
-
-    setUpdateURL(id,uploadurl){
-        this.state.attachments.map(item=>{
-            if(item.id === id){
-                item.uploadURL = uploadurl
-            }
-
-        })
-    }
+		})
+	}
     render(){
         let photoURI = this.props.user.user.photoURL
         if(photoURI){
@@ -397,30 +321,28 @@ class CreatePost extends Component{
             </Root>
         )
     }
-}
+		
+	}
 
 const styles = StyleSheet.create({
-vertical:{
-	flexDirection:'row'
-},
-name:{
-	fontSize: 16,
-    color: '#000',
-    fontWeight:'500'
-},
-tumbnail:{
+	vertical: {
+		flexDirection: 'row'
+	},
+	name: {
+		fontSize: 16,
+		color: '#000',
+		fontWeight: '500',
+		marginTop: 5
+	},
+	profileInfo: {
+	},
+	title: {
 
-},
-profileInfo:{
-	padding:10
-},
-title: {
-    
-  },
+	},
 })
-const mapStateToProps = ({user})=>{
-return {
-	user
-}
+const mapStateToProps = ({ user }) => {
+	return {
+		user
+	}
 }
 export default connect(mapStateToProps)(CreatePost)

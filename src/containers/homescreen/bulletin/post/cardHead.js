@@ -1,18 +1,28 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import CalculateTime from './calculateTime';
 
 class CardHead extends React.Component{
 
+  handlePress = () => {
+    this.props.navigation.navigate('Profile', {
+      name: this.props.userName,
+      thumbnail: this.props.thumbnail,
+      id: this.props.userid
+    });
+  }
+
   render(){
     return (
-      <View style={styles.cardHead}>
-        <Image source={{uri: this.props.thumbnail}} style={styles.thumbnail}/>
-        <View style={styles.titleWrap}>
-          <Text style={styles.title}>{this.props.userName}</Text>
-          <CalculateTime style={styles.note} timestamp={this.props.time}/>
+      <TouchableOpacity onPress={this.handlePress}>
+        <View style={styles.cardHead}>
+          <Image source={{uri: this.props.thumbnail}} style={styles.thumbnail}/>
+          <View style={styles.titleWrap}>
+            <Text style={styles.title}>{this.props.userName}</Text>
+            <CalculateTime style={styles.note} timestamp={this.props.time}/>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
