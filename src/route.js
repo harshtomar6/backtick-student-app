@@ -75,7 +75,7 @@ export const Home = TabNavigator(
 
 	},
 	tabBarComponent: TabBarBottom,
-	initialRouteName :'CreatePost',
+	initialRouteName :'Bulletin',
 	tabBarPosition: 'bottom',
 	animationEnabled: true,
 	swipeEnabled: true,

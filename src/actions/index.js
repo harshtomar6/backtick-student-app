@@ -18,7 +18,6 @@ export {
 	getPosts,
 	getPostsByPagination,
 	likePost,
-	updateLikes,
 	updateUser,
 	sendUpdateToServer,
 	joinClassToServer,

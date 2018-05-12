@@ -90,14 +90,8 @@ class Bulletin extends Component{
   render(){
     let { posts } = this.props;
     let content = '';
-
-    if(posts.isLoading)
-      content = <Spinner color={ tintColor }/>
-    else if(posts.hasError)
-      content = <Text>{posts.errMsg}</Text>
-    else{
-      let data = _.toArray(posts.data);
-      content =  <FlatList data={data}
+    let data = _.toArray(posts.data);
+    content =  <FlatList data={data}
         renderItem={({item}) => this._renderItem(item)}
         refreshing={posts.isLoading}
         onRefresh={this._handleRefresh}
@@ -106,7 +100,13 @@ class Bulletin extends Component{
         onEndThreshold={0}
         ListFooterComponent={this._listFooterComponent}
         />
-    }
+    /*if(posts.isLoading)
+      content = <Spinner color={ tintColor }/>
+    else if(posts.hasError)
+      content = <Text>{posts.errMsg}</Text>
+    else{
+      
+    }*/
     return(
       <View>
         <StatusBar

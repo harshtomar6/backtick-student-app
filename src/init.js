@@ -12,7 +12,7 @@ import configureStore from './configureStore'
 export default class Init extends Component{
     constructor(props){
         super(props)
-        console.disableYellowBox = true 
+        console.disableYellowBox = true
     }
     componentDidMount(){
         console.disableYellowBox = false
@@ -25,7 +25,7 @@ export default class Init extends Component{
                     <App />
                 </PersistGate>                
                     
-            </Provider>
+            </Provider> 
         )
     }
 }

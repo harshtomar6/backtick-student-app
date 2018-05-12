@@ -1,5 +1,6 @@
 export const FETCH_POST = "FETCH_POST"
 export const UPDATE_LIKES_POST = "UPDATE_LIKES_POST"
+export const SAVE_POST = 'SAVE_POST'
 export const UPDATE_USER_DETAILS = "UPDATE_USER_DETAILS"
 export const SEND_POST = "UPDARE_USER_DETAILS"
 

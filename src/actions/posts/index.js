@@ -1,9 +1,7 @@
 import * as actionTypes from './../actions-type';
 import { BASE_URL } from '../../globals';
-import io from 'socket.io-client';
+import { Sockets } from './ws';
 import axios from 'axios'
-// Connect Sockets
-const socket = io(BASE_URL);
 
 //Send post to server
 export  function sendPost(values){
@@ -116,24 +114,17 @@ export function likePost(data){
 		dispatch({
 			type: actionTypes.UPDATE_LIKES_POST,
 			payload: data
-		});
-		socket.emit('/post/like', data);
+		});	
+		Sockets.emit('/post/like', data);
 	}
 }
 
-export function updateLikes(data){
-  return dispatch=>{
-      dispatch({
-          type: actionTypes.UPDATE_LIKES_POST,
-          payload:data
-      })
-  }
+export function savePost(data){
+	return dispatch => {
+		dispatch({
+			type: actionTypes.SAVE_POST,
+			payload: data
+		});
+		Sockets.emit('/post/save', data);
+	}
 }
-
-socket.on('like-success', data => {
-	alert('liked');
-});
-
-socket.on('like-err', err => {
-	alert('err');
-})

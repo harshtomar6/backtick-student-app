@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Modal,
-  ScrollView, Dimensions } from 'react-native';
-
+  ScrollView, Dimensions, Text } from 'react-native';
+import { getImageURI } from './../../../../globals';
+import pdf from './../../../../img/pdf.png';
+import doc from './../../../../img/doc.png';
+import txt from './../../../../img/txt.png';
 
 export default class Attachment extends React.Component {
   constructor(){
@@ -71,16 +74,37 @@ export default class Attachment extends React.Component {
   }
 
   mapAttachment = (attachment, index) => {
-    switch(attachment.type){
-      case 'IMAGE':
-      return <TouchableOpacity activeOpacity={0.8} style={{flex: 1}}
-              onPress={() => this.handleImageTouch(true, attachment.url, index)}>
-              <Image source={{uri: attachment.url}} 
-                style={{width: '100%', height: '100%', borderWidth: 2, borderRadius: 2, borderColor: '#ccc'}} resizeMode="cover"/>
-            </TouchableOpacity>
-  
+    if(attachment.type.includes('image')){
+      return (
+        <TouchableOpacity activeOpacity={0.8} style={{flex: 1}}
+          onPress={() => this.handleImageTouch(true, attachment.url, index)}>
+          <Image source={{uri: getImageURI(attachment.uploadURL)}} 
+            style={{width: '100%', height: '100%', borderWidth: 2, borderRadius: 2, borderColor: '#ccc'}} 
+            resizeMode="cover"/>
+        </TouchableOpacity>
+      );
+    }
+    else if(attachment.type.includes('application')){
+      let docType = attachment.type.split('/')[1];
+      return (
+        <View style={styles.docStyles}>
+          <Image source={this.getDocImage(docType)} style={{width: 50, height: 50}}/>
+          <Text>{attachment.fileName}</Text>
+        </View>
+      );
+    }
+    else
+      return <View />
+  }
+
+  getDocImage = (type) => {
+    switch(type){
+      case 'pdf':
+        return pdf;
+      case 'doc':
+        return doc
       default:
-        return <View />
+        return txt
     }
   }
 
@@ -91,6 +115,7 @@ export default class Attachment extends React.Component {
       }, 10)
     });
   }
+
   render(){
     return (
       <Fragment>
@@ -104,7 +129,8 @@ export default class Attachment extends React.Component {
           <ScrollView horizontal pagingEnabled ref={e => this.scrollView = e}
             horizontalScrollIndicator={false}>
             {this.props.attachments.map(attachment =>
-                <Image source={{uri: attachment.url}} style={{height: Dimensions.get('window').height, width: Dimensions.get('window').width}}
+                <Image source={{uri: getImageURI(attachment.uploadURL)}} 
+                  style={{height: Dimensions.get('window').height, width: Dimensions.get('window').width}}
                   resizeMode='contain'/> 
             )}
           </ScrollView>
@@ -131,7 +157,10 @@ const styles={
     paddingBottom: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
-  }, 
+  },
+  docStyles: {
+    flexDirection: 'row'
+  } 
 }
 
 Attachment.defaultProps = {

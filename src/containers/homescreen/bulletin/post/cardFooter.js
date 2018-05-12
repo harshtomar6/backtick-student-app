@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Icon } from 'native-base';
 import { connect } from 'react-redux';
-import { likePost } from './../../../../actions';
+import { likePost, SignOut } from './../../../../actions';
 
 class CardFooter extends React.Component {
 
@@ -17,6 +17,9 @@ class CardFooter extends React.Component {
   componentDidMount(){
     if(this.props.likes.includes(this.props.user._id))
       this.setState({liked: true});
+
+    if(this.props.user.savedPosts.includes(this.props.postId))
+      this.setState({saved: true});
   }
 
   handleLike = () => {
