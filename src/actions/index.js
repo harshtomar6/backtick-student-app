@@ -1,7 +1,7 @@
 import { checkSignIn, SignOut, getUser, addEmailVerification, 
 	createUserWithEmailAndPassword, sendEmailOnForgotPassword, uploadToFirebase,
 	facebookLogin,googleLogin, signInWithEmailAndPassword } from './auth';
-import { getPostsByPagination, getPosts, likePost, updateLikes } from './posts';
+import { getPostsByPagination, getPosts, likePost, updateLikes ,sendPost,setCurrentPostStatusBuild} from './posts';
 import { updateUser, sendUpdateToServer, joinClassToServer } from './user'
 
 export {
@@ -21,5 +21,7 @@ export {
 	updateLikes,
 	updateUser,
 	sendUpdateToServer,
-	joinClassToServer
+	joinClassToServer,
+	sendPost,
+	setCurrentPostStatusBuild
 }

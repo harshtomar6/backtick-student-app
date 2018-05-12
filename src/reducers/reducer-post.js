@@ -48,13 +48,15 @@ export function posts(state = initialState, action){
 }
 
 const createPostInitalState = {
-    status:'BUILD',
+    status:'BUILDING',
     error:null,
     post:null
 }
 
 export function createPost(state=createPostInitalState,action){
     switch(action.type){
+        case actionTypes.CREATE_POST_BUILD:
+            return {status:'BUILDING'}
         case actionTypes.CREATE_POST_REQUEST:
             return {status:'SENDING'}
         case actionTypes.CREATE_POST_SUCCESS:

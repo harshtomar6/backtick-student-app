@@ -13,19 +13,23 @@ import {
 import _ from 'lodash'
 import shortid from 'shortid'
 import { Root,Container, Content, Footer,Input,Icon,ActionSheet,Button as NButton } from 'native-base';
-import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
+import { DocumentPicker, DocumentPickerUtil} from 'react-native-document-picker';
 import { connect } from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
+import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader'
 
 //Local imports
 
 import AvatarImg from '../../../img/avatar.jpeg'
 import RnCamera from './rncamera'
-import tintColor from '../../../globals'
+import {tintColor} from '../../../globals'
 import UploadList from './uploadlist'
+import {sendPost,setCurrentPostStatusBuild } from '../../../actions'
+import FileModal from './filemodal'
 
 var LEVEL = ["Class", "Department", "College"];
 var TYPE = ["Notes", "Assignments", "Syllabus"];
+
 class CreatePost extends Component {
 	static navigationOptions = ({ navigation }) => {
 		const { params } = navigation.state;
@@ -35,7 +39,7 @@ class CreatePost extends Component {
 				return {
 					title,
 					headerRight: (
-						<NButton style={{ height: '100%', paddingHorizontal: 5 }} transparent>
+						<NButton onPress={()=>params.onPressSendButton()} style={{ height: '100%', paddingHorizontal: 5 }} transparent>
 							<Icon name='md-send' style={{ color: tintColor }} />
 						</NButton>
 					)
@@ -66,20 +70,33 @@ class CreatePost extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			level: LEVEL[0],
+			level: 10,
 			type: 'Notes',
 			typeSelector: false,
 			input: "",
 			camera: false,
 			count: 0,
+			tempUri:'',
+			visible:false,
 			attachments: []
 		}
 
+       
 		this.openCamera = this.openCamera.bind(this)
 		this.addUrl = this.addUrl.bind(this)
 		this.openImageLibrary = this.openImageLibrary.bind(this)
     }
 
+    onPressSendButton(){
+        this.props.sendPost({
+            attachments:this.state.attachments,
+            level:this.state.level,
+            type:this.state.type,
+            text:this.state.input,
+            key:this.props.user.key,
+            token:this.props.user.token
+        })
+    }
     openImageLibrary() {
         let options = {
             title: 'Select Avatar',
@@ -105,7 +122,8 @@ class CreatePost extends Component {
                 let source = { uri: response.uri };
             
                 // You can also display the image using data:
-                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+								// let source = { uri: 'data:image/jpeg;base64,' + response.data };
+								
                 this.addUrl(response.type,response.fileName,response.uri)
                 console.log('response:',response);
                 
@@ -114,12 +132,13 @@ class CreatePost extends Component {
     }
 	
 	componentDidMount() {
-		console.log(this.props.user);
+        console.log(this.props.user);
+        this.props.navigation.setParams({setHeader: true,onPressSendButton:this.onPressSendButton.bind(this)})
 
 	}
-	componentWillUpdate() {
+	componentDidUpdate() {
 		console.log(this.state);
-
+        //
     }
     openDocumentPicker(){
         DocumentPicker.show({
@@ -201,7 +220,30 @@ class CreatePost extends Component {
 			}
 
 		})
-	}
+    }
+    
+    renderPostStatus=()=>{
+        if(this.props.createPost.status === 'BUILDING'){
+            return (
+                null
+            )
+        }
+        else if(this.props.createPost.status === 'SENDING'){
+            return (
+                <View style={{justifyContent:'center',backgroundColor:'green'}}>
+                        <Bars size={4} color="white" />
+                </View>
+            )
+        }
+        else if(this.props.createPost.status === 'SUCCESS'){
+            alert('SEND SUCCESSFULL')
+            this.props.setCurrentPostStatusBuild()
+            return null
+        }
+        else if(this.props.createPost.status === 'FAIL'){
+
+        }
+    }
     render(){
         let photoURI = this.props.user.user.photoURL
         if(photoURI){
@@ -220,10 +262,10 @@ class CreatePost extends Component {
             <Root>
             <Container>
                 
-                
+								<FileModal visible={this.state.visible} uri={this.state.tempUri}/>
 
                 <Content>
-                    
+                    {this.renderPostStatus()}
                     <View>
                         <View style={[styles.vertical,{padding:10,backgroundColor:'#fff'}]}>
                             <View style={styles.tumbnail}>
@@ -248,7 +290,7 @@ class CreatePost extends Component {
                                           },
                                           buttonIndex => {
                                             if(buttonIndex !== 3){
-                                                this.setState({ level: LEVEL[buttonIndex] });
+                                                this.setState({ level: (buttonIndex+1)*10 });
                                             }
                                     
                                             
@@ -294,27 +336,41 @@ class CreatePost extends Component {
                     </View>
                 </Content>
                 <Footer style={{backgroundColor:'#fff'}}>
-                    <View style={[styles.vertical,{backgroundColor:'#f5f5f5',flex:1,justifyContent:'space-around',alignItems:'center'}]}>
-                        <TouchableOpacity 
+                    <View style={[styles.vertical,{backgroundColor:'#f5f5f5',flex:1,justifyContent:'center'}]}>
+                        <NButton 
+                            style={{ flex:1,height: '100%', paddingHorizontal: 5 }} 
+                            transparent
                             onPress={this.openCamera.bind(this)}
                         >
                             <Icon name='md-camera' style={{color:'#749bbf'}}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
+                        </NButton>
+                        <NButton 
+                            style={{ flex:1,height: '100%', paddingHorizontal: 5, justifyContent:'center'}} 
+                            transparent
                             onPress={this.openImageLibrary}
                         >
                             <Icon name='md-image' style={{color:'#749bbf'}}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
+                        </NButton>
+                        <NButton
+                            style={{ flex:1,height: '100%', paddingHorizontal: 5,justifyContent:'center' }} 
+                            transparent
+                        >
+                            
                             <Icon name='md-videocam' style={{color:'#749bbf'}}/>
                            
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.openDocumentPicker.bind(this)}>
+                        </NButton>
+                        <NButton 
+                            style={{ flex:1,height: '100%', paddingHorizontal: 5,justifyContent:'center' }} 
+                            transparent
+                            onPress={this.openDocumentPicker.bind(this)}>
                            <Icon name='md-document' style={{color:'#749bbf'}}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
+                        </NButton>
+                        <NButton
+                            style={{ flex:1,height: '100%', paddingHorizontal: 5 ,justifyContent:'center'}} 
+                            transparent
+                        >
                            <Icon name='md-link' style={{color:'#749bbf'}}/>
-                        </TouchableOpacity>
+                        </NButton>
                     </View>
                 </Footer>
             </Container>
@@ -340,9 +396,10 @@ const styles = StyleSheet.create({
 
 	},
 })
-const mapStateToProps = ({ user }) => {
+const mapStateToProps = ({ user,createPost }) => {
 	return {
-		user
+        user,
+        createPost
 	}
 }
-export default connect(mapStateToProps)(CreatePost)
+export default connect(mapStateToProps,{sendPost,setCurrentPostStatusBuild})(CreatePost)

@@ -15,7 +15,7 @@ export default class Init extends Component{
         console.disableYellowBox = true 
     }
     componentDidMount(){
-        console.disableYellowBox = true
+        console.disableYellowBox = false
    }
     render(){
 
